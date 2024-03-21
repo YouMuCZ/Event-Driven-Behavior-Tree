@@ -4,14 +4,16 @@ using Godot;
 [Tool]
 public partial class MainWindow : Control
 {
+	private Workspace _workspace;
 	private MenuButton _fileMenu;
 	private MenuButton _debugMenu;
 	private LinkButton _version;
 	private FileDialog _newDialog;
 	private FileDialog _saveDialog;
 	private FileDialog _openDialog;
-	private Workspace _workspace;
 	private FileManager _fileManager;
+	private TextureButton _lPanelButton;
+	private VSplitContainer _variablesPanel;
 
 	private bool _debug;
 
@@ -37,11 +39,13 @@ public partial class MainWindow : Control
 		_version     = GetNode<LinkButton>("Main/StatusBar/Version");
 		_fileMenu    = GetNode<MenuButton>("Main/ToolBar/FileMenu");
 		_debugMenu   = GetNode<MenuButton>("Main/ToolBar/DebugMenu");
-		_workspace   = GetNode<Workspace>("Main/Workspace");
+		_workspace   = GetNode<Workspace>("Main/Panel/Workspace");
+		_fileManager = GetNode<FileManager>("FileManager");
 		_newDialog   = GetNode<FileDialog>("Main/Window/NewFile");
 		_saveDialog  = GetNode<FileDialog>("Main/Window/SaveFile");
 		_openDialog  = GetNode<FileDialog>("Main/Window/OpenFile");
-		_fileManager = GetNode<FileManager>("FileManager");
+		_lPanelButton = GetNode<TextureButton>("Main/StatusBar/LPanelButton");
+		_variablesPanel = GetNode<VSplitContainer>("Main/Panel/Variables");
 	}
 	
 	/// <summary>
@@ -61,7 +65,9 @@ public partial class MainWindow : Control
 		_newDialog.FileSelected += OnNewFile;
 		_openDialog.FileSelected += OnOpenFile;
 		_saveDialog.FileSelected += OnSaveAsFile;
+		
 		_fileMenu.GetPopup().IndexPressed += OnFileMenuPressed;
+		_lPanelButton.Pressed += OnLPanelButtonPressed;
 		
 		// 注册快捷键
 		var shortcut = new Shortcut();
@@ -75,7 +81,12 @@ public partial class MainWindow : Control
 		shortcut.Events.Add(saveEvent);
 		_fileMenu.GetPopup().SetItemShortcut(2, shortcut);
 	}
-	
+
+	private void OnLPanelButtonPressed()
+	{
+		_variablesPanel.Visible = !_variablesPanel.Visible;
+	}
+
 	/// <summary>
 	/// 文件菜单
 	/// </summary>
