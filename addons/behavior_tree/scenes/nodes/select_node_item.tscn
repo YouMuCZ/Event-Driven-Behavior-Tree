@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr8ikvkqu7r6o"]
+
+[ext_resource type="Texture2D" uid="uid://b8o81rn8q8a43" path="res://addons/behavior_tree/resources/icons/Remove.svg" id="1_4cfcj"]
+[ext_resource type="Script" path="res://addons/Dialogue/edit/nodes/scripts/SelectNodeItem.cs" id="1_xiwky"]
+
+[node name="Item" type="HBoxContainer"]
+offset_right = 300.0
+offset_bottom = 31.0
+size_flags_horizontal = 3
+script = ExtResource("1_xiwky")
+
+[node name="option" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+editable = false
+
+[node name="delete" type="Button" parent="."]
+layout_mode = 2
+icon = ExtResource("1_4cfcj")

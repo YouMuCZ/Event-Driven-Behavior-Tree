@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://birvxeqcpilmi"]
+
+[ext_resource type="Script" path="res://addons/Dialogue/edit/nodes/scripts/SelectNode.cs" id="1_7hoe2"]
+[ext_resource type="Texture2D" uid="uid://jublgregemru" path="res://addons/Dialogue/resources/icons/Add.svg" id="2_o1mhh"]
+
+[node name="SelectNode" type="GraphNode"]
+offset_right = 300.0
+offset_bottom = 80.0
+title = "Select Node"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("1_7hoe2")
+
+[node name="Toolbar" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="Toolbar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "选项"
+
+[node name="AddButton" type="Button" parent="Toolbar"]
+layout_mode = 2
+size_flags_horizontal = 0
+icon = ExtResource("2_o1mhh")
+alignment = 0
+icon_alignment = 2

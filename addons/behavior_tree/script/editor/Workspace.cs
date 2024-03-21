@@ -1,0 +1,72 @@
+using Godot;
+
+[Tool]
+public partial class Workspace : VBoxContainer
+{
+    private TabBar _tabBar;
+    private TabContainer _tabContainer;
+    
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
+    {
+    	_tabBar = GetNode<TabBar>("TabBar");
+    	_tabContainer = GetNode<TabContainer>("TabContainer");
+
+    	_tabBar.TabCloseDisplayPolicy = TabBar.CloseButtonDisplayPolicy.ShowAlways;
+    	_tabBar.TabSelected += OnTabSelected;
+    	_tabBar.TabClosePressed += OnTabClosePressed;
+    }
+
+    private void OnTabClosePressed(long tab)
+    {
+    	_tabBar.RemoveTab((int)tab);
+    	_tabContainer.RemoveChild(GetTabEditor((int)tab));
+    }
+
+    private void OnTabSelected(long tab)
+    {
+    	_tabContainer.CurrentTab = (int)tab;
+    }
+
+    public void SetCurrentTab(int index)
+    {
+    	_tabBar.CurrentTab = index;
+    	_tabContainer.CurrentTab = index;
+    }
+
+    public int GetTabCount()
+    {
+    	return _tabContainer.GetTabCount();
+    }
+
+    public Editor GetCurrentEditor()
+    {
+    	return (Editor)_tabContainer.GetCurrentTabControl();
+    }
+    
+    public Editor GetTabEditor(int index)
+    {
+    	return (Editor)_tabContainer.GetTabControl(index);
+    }
+    
+    public int GetTabEditor(string filepath)
+    {
+    	for (var i = 0; i < _tabContainer.GetTabCount(); i++)
+    	{
+    		var editor = GetTabEditor(i);
+    		if (filepath == editor.DGraphData.Filepath) return i;
+    	}
+
+    	return -1;
+    }
+    
+    /// <summary>
+    /// 新增节点图到工作区中
+    /// </summary>
+    /// <param name="editor"></param>
+    public void AddEditor(Editor editor)
+    {
+    	_tabBar.AddTab(editor.Name);
+    	_tabContainer.AddChild(editor);
+    }
+}
