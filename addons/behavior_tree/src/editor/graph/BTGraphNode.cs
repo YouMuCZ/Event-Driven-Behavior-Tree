@@ -5,15 +5,14 @@ using Godot;
 using Godot.Collections;
 
 /// <summary>
-/// Dialogue Node, inherited from GraphNode.
+/// inherited from GraphNode.
 /// </summary>
 [Tool]
-public partial class DGraphNode : GraphNode
+public partial class BTGraphNode : GraphNode
 {
-    protected Editor NEditor;
-    private bool _isMouseEntered;
-    private bool _isFocusEntered;
-    
+    protected BTGraphEdit NBtGraphEdit;
+    public BTNode Meta = new ();
+
     #region Serialie/Deserialize meta
 
     private List<PropertyInfo> _metaPropertyInfo = new();
@@ -60,11 +59,6 @@ public partial class DGraphNode : GraphNode
     	_metaPropertyInfo = GetType().GetProperties()
     		.Where(t => t.GetCustomAttributes(typeof(NodeMetaAttribute), true).Any())
     		.ToList();
-    	
-    	MouseExited += OnMouseExited;
-    	MouseEntered += OnMouseEntered;
-    	FocusEntered += OnFocusEntered;
-    	FocusExited += OnFocusExited;
     }
 
     public override void _GuiInput(InputEvent @event)
@@ -79,35 +73,14 @@ public partial class DGraphNode : GraphNode
     	}
     }
 
-    public void SetEditor(Editor editor)
+    public void SetEditor(BTGraphEdit btGraphEdit)
     {
-	    NEditor = editor;
+	    NBtGraphEdit = btGraphEdit;
+	    NBtGraphEdit.NodeRemoved += OnNodeRemoved;
+    }
+
+    protected virtual void OnNodeRemoved(BTGraphNode node)
+    {
 	    
-	    NEditor.NodeRemoved += OnNodeRemoved;
-    }
-
-    protected virtual void OnNodeRemoved(DGraphNode node)
-    {
-	    
-    }
-
-    private void OnMouseEntered()
-    {
-    	_isMouseEntered = true;
-    }
-
-    private void OnMouseExited()
-    {
-    	_isMouseEntered = false;
-    }
-
-    private void OnFocusEntered()
-    {
-    	_isFocusEntered = true;
-    }
-
-    private void OnFocusExited()
-    {
-    	_isFocusEntered = false;
     }
 }

@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://cqadvabhxs0oi"]
 
-[ext_resource type="Script" path="res://addons/behavior_tree/script/editor/MainWindow.cs" id="1_3hk21"]
-[ext_resource type="PackedScene" uid="uid://bmvil7yqninxd" path="res://addons/behavior_tree/scenes/windows/workspace.tscn" id="2_ipnih"]
-[ext_resource type="Script" path="res://addons/behavior_tree/script/editor/files/FileManager.cs" id="3_pwvor"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/MainWindow.cs" id="1_3hk21"]
+[ext_resource type="PackedScene" uid="uid://bmvil7yqninxd" path="res://addons/behavior_tree/src/scenes/workspace.tscn" id="2_ipnih"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/files/FileManager.cs" id="3_pwvor"]
 [ext_resource type="Texture2D" uid="uid://cc1ufhyvste6m" path="res://addons/behavior_tree/resources/icons/Forward.svg" id="3_qjbb3"]
 [ext_resource type="Texture2D" uid="uid://bnlg07ckbg0w" path="res://addons/behavior_tree/resources/icons/Back.svg" id="4_dbjcw"]
 

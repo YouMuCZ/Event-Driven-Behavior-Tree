@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://bu0thuoohc23v"]
 
-[ext_resource type="Script" path="res://addons/behavior_tree/script/editor/Editor.cs" id="1_mn3k0"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/graph/BTGraphEdit.cs" id="1_mn3k0"]
 
-[node name="Eidtor" type="GraphEdit"]
+[node name="GraphEidt" type="GraphEdit"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,7 +16,6 @@ script = ExtResource("1_mn3k0")
 title = "Menu"
 item_count = 4
 item_0/text = "对白节点"
-item_0/id = 0
 item_1/text = "选择节点"
 item_1/id = 1
 item_2/text = "选择子节点"
@@ -27,7 +26,6 @@ item_3/id = 3
 [node name="NodePopupMenu" type="PopupMenu" parent="."]
 item_count = 3
 item_0/text = "Copy"
-item_0/id = 0
 item_1/text = "Paste"
 item_1/id = 1
 item_2/text = "Delete"

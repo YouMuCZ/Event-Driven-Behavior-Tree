@@ -4,6 +4,8 @@ using Godot;
 [Tool]
 public partial class MainWindow : Control
 {
+	public BehaviorTreePlugin Plugin;
+	
 	private Workspace _workspace;
 	private MenuButton _fileMenu;
 	private MenuButton _debugMenu;

@@ -6,7 +6,7 @@ public partial class FileManager : Node
 {
 	public Workspace Workspace;
 	
-	private PackedScene _graphEdit = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/scenes/graph/eidtor.tscn");
+	private PackedScene _graphEdit = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/graph/graph_eidt.tscn");
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -41,12 +41,12 @@ public partial class FileManager : Node
 		}
 		else
 		{
-			var data = ResourceLoader.Load<GraphData>(filepath, "", ResourceLoader.CacheMode.Replace);
+			var data = ResourceLoader.Load<BTGraphData>(filepath, "", ResourceLoader.CacheMode.Replace);
 			data.FileDir = dir;
 			data.Filename = filename;
 			data.Filepath = filepath;
 			
-			var editor = _graphEdit.Instantiate<Editor>();
+			var editor = _graphEdit.Instantiate<BTGraphEdit>();
 			editor.LoadData(data);
 			Workspace.AddEditor(editor);
 		}
@@ -62,8 +62,8 @@ public partial class FileManager : Node
 	/// <param name="filepath"></param>
 	public void CreateFile(string dir, string filename, string filepath)
 	{
-		var editor = _graphEdit.Instantiate<Editor>();
-		var data = new GraphData()
+		var editor = _graphEdit.Instantiate<BTGraphEdit>();
+		var data = new BTGraphData()
 		{
 			FileDir = dir,
 			Filename = filename,

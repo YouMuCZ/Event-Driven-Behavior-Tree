@@ -3,7 +3,7 @@ using Godot.Collections;
 
 
 [Tool]
-public partial class GraphData : Resource
+public partial class BTGraphData : Resource
 {
     [Export] public string FileDir;
     [Export] public string Filename;

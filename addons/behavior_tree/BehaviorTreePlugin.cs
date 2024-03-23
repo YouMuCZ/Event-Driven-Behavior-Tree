@@ -7,13 +7,14 @@ public partial class BehaviorTreePlugin : EditorPlugin
 {
 	public static readonly ConfigFile DConfigFile = new ();
 		
-	private Control _mainPanelInstance;
-	private PackedScene _mainPanel = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/scenes/windows/main_window.tscn");
+	private MainWindow _mainPanelInstance;
+	private PackedScene _mainPanel = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/main_window.tscn");
 		
 	public override void _EnterTree()
 	{
-		_mainPanelInstance = _mainPanel.Instantiate<Control>();
-			
+		_mainPanelInstance = _mainPanel.Instantiate<MainWindow>();
+		_mainPanelInstance.Plugin = this;
+		
 		// Add the main panel to the editor's main viewport.
 		EditorInterface.Singleton.GetEditorMainScreen().AddChild(_mainPanelInstance);
 		// Hide the main panel. Very much required.

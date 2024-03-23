@@ -39,14 +39,14 @@ public partial class Workspace : VBoxContainer
     	return _tabContainer.GetTabCount();
     }
 
-    public Editor GetCurrentEditor()
+    public BTGraphEdit GetCurrentEditor()
     {
-    	return (Editor)_tabContainer.GetCurrentTabControl();
+    	return (BTGraphEdit)_tabContainer.GetCurrentTabControl();
     }
     
-    public Editor GetTabEditor(int index)
+    public BTGraphEdit GetTabEditor(int index)
     {
-    	return (Editor)_tabContainer.GetTabControl(index);
+    	return (BTGraphEdit)_tabContainer.GetTabControl(index);
     }
     
     public int GetTabEditor(string filepath)
@@ -54,7 +54,7 @@ public partial class Workspace : VBoxContainer
     	for (var i = 0; i < _tabContainer.GetTabCount(); i++)
     	{
     		var editor = GetTabEditor(i);
-    		if (filepath == editor.DGraphData.Filepath) return i;
+    		if (filepath == editor.GraphData.Filepath) return i;
     	}
 
     	return -1;
@@ -63,10 +63,10 @@ public partial class Workspace : VBoxContainer
     /// <summary>
     /// 新增节点图到工作区中
     /// </summary>
-    /// <param name="editor"></param>
-    public void AddEditor(Editor editor)
+    /// <param name="btGraphEdit"></param>
+    public void AddEditor(BTGraphEdit btGraphEdit)
     {
-    	_tabBar.AddTab(editor.Name);
-    	_tabContainer.AddChild(editor);
+    	_tabBar.AddTab(btGraphEdit.Name);
+    	_tabContainer.AddChild(btGraphEdit);
     }
 }
