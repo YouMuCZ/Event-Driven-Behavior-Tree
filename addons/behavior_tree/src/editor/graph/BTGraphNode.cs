@@ -11,6 +11,9 @@ using Godot.Collections;
 public partial class BTGraphNode : GraphNode
 {
     private BTGraphEdit _graphEdit;
+    /// <summary>
+    /// 节点的数据结构和业务逻辑
+    /// </summary>
     public NodeMeta Meta;
     
     // Called when the node enters the scene tree for the first time.

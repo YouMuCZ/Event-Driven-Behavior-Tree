@@ -11,7 +11,9 @@ public partial class NodeMeta : Resource
     
     #region Serialie/Deserialize meta
     
+    /// <summary>需要存储到Resource本地文件里的参数和参数值。</summary>
     private readonly List<PropertyInfo> _metaPropertyInfo;
+    /// <summary> 节点类型,需要事先定义 </summary>
     [NodeMeta] public string NodeType { get; private set; }
     [NodeMeta] public string NodeName { set => Owner.Name = value; get => Owner.Name; }
     [NodeMeta] public Vector2 NodePositionOffset { set => Owner.PositionOffset = value; get => Owner.PositionOffset; }
@@ -28,7 +30,7 @@ public partial class NodeMeta : Resource
         return data;
     }
 
-    public virtual void Deserialize(Dictionary data)
+    public void Deserialize(Dictionary data)
     {
         if (data == null) return;
     	

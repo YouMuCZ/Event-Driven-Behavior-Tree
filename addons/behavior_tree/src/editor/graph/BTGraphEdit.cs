@@ -86,6 +86,12 @@ public partial class BTGraphEdit : GraphEdit
 		}
 	}
 	
+	/// <summary>
+	/// Emitted when user drags a connection from an output port into the empty space of the graph.
+	/// </summary>
+	/// <param name="fromNode"></param>
+	/// <param name="fromPort"></param>
+	/// <param name="releasePosition"></param>
 	private void OnConnectionToEmpty(StringName fromNode, long fromPort, Vector2 releasePosition)
 	{
 		OnShowMenu(releasePosition);
@@ -99,19 +105,28 @@ public partial class BTGraphEdit : GraphEdit
 			NodeCreated -= OnNodeCreated;
 		}
 	}
-
+	
+	/// <summary>
+	/// <para>Emitted when the given <see cref="Godot.GraphElement"/> node is selected.</para>
+	/// </summary>
 	private void OnNodeSelected(Node node)
 	{
 		// 更新检查器面板
 		var btGraphNode = (BTGraphNode)node;
 		EditorInterface.Singleton.InspectObject(btGraphNode.Meta, inspectorOnly:true);
 	}
-
+	
+	/// <summary>
+	/// <para>Emitted to the GraphEdit when the connection between the <c>fromPort</c> of the <c>fromNode</c> <see cref="Godot.GraphNode"/> and the <c>toPort</c> of the <c>toNode</c> <see cref="Godot.GraphNode"/> is attempted to be created.</para>
+	/// </summary>
 	private void OnConnectionRequest(StringName fromNode, long fromPort, StringName toNode, long toPort)
 	{
 		ConnectNode(fromNode, (int)fromPort, toNode, (int)toPort);
 	}
 	
+	/// <summary>
+	/// <para>Emitted to the GraphEdit when the connection between <c>fromPort</c> of <c>fromNode</c> <see cref="Godot.GraphNode"/> and <c>toPort</c> of <c>toNode</c> <see cref="Godot.GraphNode"/> is attempted to be removed.</para>
+	/// </summary>
 	private void OnDisconnectionRequest(StringName fromNode, long fromPort, StringName toNode, long toPort)
 	{
 		DisconnectNode(fromNode, (int)fromPort, toNode, (int)toPort);
@@ -200,7 +215,10 @@ public partial class BTGraphEdit : GraphEdit
 
 		return newNode;
 	}
-
+	
+	/// <summary>
+	/// Remove selected node by node popup menu.
+	/// </summary>
 	private void RemoveSelectedNode()
 	{
 		var nodeSelected = GetNodeSelected();
@@ -239,7 +257,12 @@ public partial class BTGraphEdit : GraphEdit
 		node.QueueFree();
 		RemoveChild(node);
 	}
-
+	
+	/// <summary>
+	/// Get node by node name from temp nodes in this class.
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
 	public BTGraphNode GetNodeByName(string name)
 	{
 		return _nodes.GetValueOrDefault(name, null);
