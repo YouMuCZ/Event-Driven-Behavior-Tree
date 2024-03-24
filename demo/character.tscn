@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://drdiwxsf8c1ge"]
+
+[ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTreePlayer.cs" id="1_pv7gw"]
+
+[node name="Character" type="CharacterBody2D"]
+
+[node name="BehaviorTreePlayer" type="Node" parent="."]
+script = ExtResource("1_pv7gw")

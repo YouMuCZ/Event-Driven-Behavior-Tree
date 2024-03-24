@@ -89,7 +89,7 @@ title = "Create a File"
 position = Vector2i(0, 36)
 size = Vector2i(500, 350)
 mode_overrides_title = false
-filters = PackedStringArray("*.tres; Dialogue File")
+filters = PackedStringArray("*.tres; Behavior Tree")
 
 [node name="SaveFile" type="FileDialog" parent="Main/Window"]
 position = Vector2i(300, 150)
@@ -103,7 +103,7 @@ size = Vector2i(500, 350)
 ok_button_text = "打开"
 mode_overrides_title = false
 file_mode = 0
-filters = PackedStringArray("*.tres; Dialogue File")
+filters = PackedStringArray("*.tres; Behavior Tree")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="Main"]
 layout_mode = 2

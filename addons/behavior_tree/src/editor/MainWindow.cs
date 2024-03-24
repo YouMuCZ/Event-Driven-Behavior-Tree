@@ -4,8 +4,6 @@ using Godot;
 [Tool]
 public partial class MainWindow : Control
 {
-	public BehaviorTreePlugin Plugin;
-	
 	private Workspace _workspace;
 	private MenuButton _fileMenu;
 	private MenuButton _debugMenu;
@@ -56,7 +54,7 @@ public partial class MainWindow : Control
 	private void InitParam()
 	{
 		_fileManager.Workspace = _workspace;
-		_version.Text = (string)BehaviorTreePlugin.DConfigFile.GetValue("plugin", "version", "1.0.0");
+		_version.Text = (string)BehaviorTreePlugin.MConfigFile.GetValue("plugin", "version", "1.0.0");
 	}
 	
 	/// <summary>

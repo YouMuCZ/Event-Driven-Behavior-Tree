@@ -1,9 +1,9 @@
 using Godot;
+using System;
 using Godot.Collections;
 
-
 [Tool]
-public partial class BTGraphData : Resource
+public partial class BehaviorTree : Resource
 {
     [Export] public string FileDir;
     [Export] public string Filename;
@@ -13,4 +13,20 @@ public partial class BTGraphData : Resource
 
     [Export] public Array<Dictionary> Nodes = new (){new Dictionary {{"NodeType", "RootNode"}},};
     [Export] public Array<Dictionary> Connection = new ();
+    
+    private BehaviorTreePlayer _treePlayer;
+    public void Initialize(BehaviorTreePlayer treePlayer)
+    {
+        _treePlayer = treePlayer;
+    }
+
+    public bool Start()
+    {
+        return true;
+    }
+
+    public bool Stop()
+    {
+        return true;
+    }
 }

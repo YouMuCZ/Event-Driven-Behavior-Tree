@@ -5,7 +5,7 @@ using Godot;
 [Tool]
 public partial class BehaviorTreePlugin : EditorPlugin
 {
-	public static readonly ConfigFile DConfigFile = new ();
+	public static readonly ConfigFile MConfigFile = new ();
 		
 	private MainWindow _mainPanelInstance;
 	private PackedScene _mainPanel = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/main_window.tscn");
@@ -13,14 +13,13 @@ public partial class BehaviorTreePlugin : EditorPlugin
 	public override void _EnterTree()
 	{
 		_mainPanelInstance = _mainPanel.Instantiate<MainWindow>();
-		_mainPanelInstance.Plugin = this;
 		
 		// Add the main panel to the editor's main viewport.
 		EditorInterface.Singleton.GetEditorMainScreen().AddChild(_mainPanelInstance);
 		// Hide the main panel. Very much required.
 		_MakeVisible(false);
 			
-		DConfigFile.Load("res://addons/behavior_tree/plugin.cfg");
+		MConfigFile.Load("res://addons/behavior_tree/plugin.cfg");
 	}
 
 	public override void _ExitTree()

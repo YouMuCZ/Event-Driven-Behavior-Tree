@@ -41,7 +41,7 @@ public partial class FileManager : Node
 		}
 		else
 		{
-			var data = ResourceLoader.Load<BTGraphData>(filepath, "", ResourceLoader.CacheMode.Replace);
+			var data = ResourceLoader.Load<BehaviorTree>(filepath, "", ResourceLoader.CacheMode.Replace);
 			data.FileDir = dir;
 			data.Filename = filename;
 			data.Filepath = filepath;
@@ -63,7 +63,7 @@ public partial class FileManager : Node
 	public void CreateFile(string dir, string filename, string filepath)
 	{
 		var editor = _graphEdit.Instantiate<BTGraphEdit>();
-		var data = new BTGraphData()
+		var data = new BehaviorTree()
 		{
 			FileDir = dir,
 			Filename = filename,
