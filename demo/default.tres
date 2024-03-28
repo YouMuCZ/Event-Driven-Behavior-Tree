@@ -10,6 +10,7 @@ Filepath = "res://demo/default.tres"
 EngineVersion = "4.3-dev4 (official)"
 PluginVersion = ""
 Nodes = [{
+"NodeCategory": "BasicNodes",
 "NodeName": "RootNode",
 "NodePositionOffset": Vector2(0, 0),
 "NodeType": "RootNode"

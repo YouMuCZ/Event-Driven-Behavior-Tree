@@ -18,6 +18,7 @@ public partial class BehaviorTreePlugin : EditorPlugin
 		EditorInterface.Singleton.GetEditorMainScreen().AddChild(_mainPanelInstance);
 		// Hide the main panel. Very much required.
 		_MakeVisible(false);
+		NodeMetaStorage.Setup();
 			
 		MConfigFile.Load("res://addons/behavior_tree/plugin.cfg");
 	}

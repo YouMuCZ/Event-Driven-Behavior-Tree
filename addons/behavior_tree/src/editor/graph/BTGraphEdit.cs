@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Godot;
@@ -21,13 +22,14 @@ public partial class BTGraphEdit : GraphEdit
 	private readonly System.Collections.Generic.Dictionary<string, BTGraphNode> _nodes = new ();
 	private readonly System.Collections.Generic.Dictionary<string, PackedScene> _nodesScenes = new ()
 	{
-		{"RootNode", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/nodes/root_node.tscn")},
+		{"Root", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/nodes/root_node.tscn")},
 	};
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		Initialize();
+		Setup();
 	}
 
 	private void Initialize()
@@ -37,7 +39,6 @@ public partial class BTGraphEdit : GraphEdit
 		
 		_graphPopupMenu = GetNode<PopupMenu>("GraphPopupMenu");
 		_nodePopupMenu = GetNode<PopupMenu>("NodePopupMenu");
-		_graphPopupMenu.IdPressed += OnGraphPopupMenuPressed;
 		_nodePopupMenu.IdPressed += OnNodePopupMenuPressed;
 		
 		PopupRequest += OnShowMenu;
@@ -47,6 +48,39 @@ public partial class BTGraphEdit : GraphEdit
 		ConnectionToEmpty += OnConnectionToEmpty;
 		ConnectionRequest += OnConnectionRequest;
 		DisconnectionRequest += OnDisconnectionRequest;
+	}
+	
+	private void Setup()
+	{
+		foreach (var kvp in NodeMetaStorage.NodeMetaCategory)
+		{
+			var nodeCategory = kvp.Key;
+			var submenu = new PopupMenu();
+			submenu.Name = kvp.Key;
+			// 使用lambda表达式来适配事件处理器签名
+			submenu.IndexPressed += (index) => OnGraphPopupMenuPressed(submenu, (int)index);
+			
+			var itemIndex = 0;
+			foreach (var variable in kvp.Value)
+			{
+				var nodeType = variable["NodeType"];
+				var nodeName = variable["NodeName"];
+				
+				var data = new Dictionary
+				{
+					{ "NodeType", nodeType },
+					{ "NodeName", nodeName},
+					{"NodeCategory", nodeCategory},
+					{"NodePositionOffset", Vector2.Zero}
+				};
+				
+				submenu.AddItem(nodeName);
+				submenu.SetItemMetadata(itemIndex, data);
+				itemIndex += 1;
+			}
+			
+			_graphPopupMenu.AddSubmenuNodeItem(nodeCategory, submenu);
+		}
 	}
 
 	#region event callback
@@ -63,8 +97,8 @@ public partial class BTGraphEdit : GraphEdit
 			var nodeType = (string)data["NodeType"];
 			switch (nodeType)
 			{
-				case "RootNode":
-					CreateNode<BTGraphNodeRoot>(nodeType, data);
+				case "Root":
+					CreateNode<BTGraphNode>(data);
 					break;
 			}
 		}
@@ -158,13 +192,19 @@ public partial class BTGraphEdit : GraphEdit
 		_cursorPos = (position + ScrollOffset) / Zoom;
 	}
 	
-	private void OnGraphPopupMenuPressed(long id)
+	/// <summary>
+	/// 面板右键菜单,创建节点
+	/// </summary>
+	/// <param name="menu"></param>
+	/// <param name="index"></param>
+	private void OnGraphPopupMenuPressed(PopupMenu menu, int index)
 	{
-		switch (id)
-		{
-			case 0:
-				break;
-		}
+		var data = (Dictionary)menu.GetItemMetadata(index);
+		
+		// 更新节点位置
+		data["NodePositionOffset"] = _cursorPos;
+		
+		CreateNode<BTGraphNode>(data:data, menu:true);
 	}
 
 	private void OnNodePopupMenuPressed(long id)
@@ -188,26 +228,19 @@ public partial class BTGraphEdit : GraphEdit
 	/// <summary>
 	/// <para>Create and init graph node <see cref="BTGraphNode"/>. If there has data, then deserialize node data.</para>
 	/// </summary>
-	/// <param name="nodeType"></param>
 	/// <param name="data"></param>
+	/// <param name="menu"> 右键菜单创建的节点 </param>
 	/// <typeparam name="T"></typeparam>
-	public T CreateNode<T>(string nodeType, Dictionary data = null) where T : BTGraphNode
+	public T CreateNode<T>(Dictionary data = null, bool menu = false) where T : BTGraphNode
 	{
-		if (!_nodesScenes.TryGetValue(nodeType, out var nodeScene)) return null;
-		
+		var nodeScene = _nodesScenes["Root"];
 		var newNode = nodeScene.Instantiate<T>();
-		newNode.Initialize(this);
 		
-		if (data == null)
-		{
-			newNode.Name= $"{newNode.Name}_1";
-			newNode.PositionOffset = _cursorPos;
-		}
-		else
-		{
-			newNode.Meta.Deserialize(data);
-		}
-		
+		newNode.Setup(this, data);
+		// newNode.Title = $"{newNode.Meta.NodeName}_1";
+		newNode.Name = $"{newNode.Meta.NodeName}_1";
+		newNode.PositionOffset = _cursorPos;
+
 		AddChild(newNode, true);
 		_nodes.Add(newNode.Name, newNode);
 		
@@ -232,7 +265,7 @@ public partial class BTGraphEdit : GraphEdit
 	{
 		if (!IsInstanceValid(node)) return;
 		// Can't remove start node.
-		if (node.Meta.NodeType == "RootNode") return;
+		if (node.Meta.NodeType == "Root") return;
 		if (!_nodes.ContainsKey(node.Name)) return;
 		
 		_nodes.Remove(node.Name);
@@ -248,7 +281,7 @@ public partial class BTGraphEdit : GraphEdit
 		if (node == null) return;
 		if (!IsInstanceValid(node)) return;
 		// Can't remove start node.
-		if (node.Meta.NodeType == "RootNode") return;
+		if (node.Meta.NodeType == "Root") return;
 		if (!_nodes.ContainsKey(node.Name)) return;
 		
 		_nodes.Remove(node.Name);
@@ -333,8 +366,8 @@ public partial class BTGraphEdit : GraphEdit
 			var nodeType = (string)d["NodeType"];
 			switch (nodeType)
 			{
-				case "RootNode":
-					CreateNode<BTGraphNodeRoot>(nodeType, d);
+				case "Root":
+					CreateNode<BTGraphNodeRoot>(d);
 					break;
 			}
 		}

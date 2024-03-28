@@ -34,9 +34,15 @@ public partial class BTGraphNode : GraphNode
     	}
     }
 
-    public void Initialize(BTGraphEdit graphEdit)
+    /// <summary>
+    /// 添加进GraphEdit前需要先初始化部分参数
+    /// </summary>
+    /// <param name="graphEdit"></param>
+    /// <param name="data"></param>
+    public void Setup(BTGraphEdit graphEdit, Dictionary data)
     {
-	    Meta = new NodeMeta(this);
+	    Meta = new NodeMeta(this, data);
+	    Meta.Deserialize(data);
 	    
 	    _graphEdit = graphEdit;
 	    _graphEdit.NodeRemoved += OnNodeRemoved;

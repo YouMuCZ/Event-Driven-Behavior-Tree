@@ -4,6 +4,7 @@ using Godot;
 [Tool, GlobalClass, Icon("res://addons/Dialogue/resources/icons/file_manager.svg")]
 public partial class FileManager : Node
 {
+	public MainWindow MainWindow;
 	public Workspace Workspace;
 	
 	private PackedScene _graphEdit = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/graph/graph_eidt.tscn");

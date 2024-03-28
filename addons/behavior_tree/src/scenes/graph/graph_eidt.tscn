@@ -14,14 +14,6 @@ script = ExtResource("1_mn3k0")
 
 [node name="GraphPopupMenu" type="PopupMenu" parent="."]
 title = "Menu"
-item_count = 4
-item_0/text = "对白节点"
-item_1/text = "选择节点"
-item_1/id = 1
-item_2/text = "选择子节点"
-item_2/id = 2
-item_3/text = "结束节点"
-item_3/id = 3
 
 [node name="NodePopupMenu" type="PopupMenu" parent="."]
 item_count = 3
