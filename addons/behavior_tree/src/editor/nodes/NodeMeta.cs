@@ -47,7 +47,8 @@ public class NodeMetaStorage
                 }
             }
             
-            if (nodeCategory == null || nodeType == null) continue;
+            // TODO: 后续应该有config专门用来做编辑器设置用
+            if (nodeCategory == null || nodeType == null || nodeType == "Root") continue;
             
             if (NodeMetaCategory.TryGetValue(nodeCategory, out var categories))
             {
@@ -81,7 +82,7 @@ public partial class NodeMeta : Resource
     
     [NodeMeta] public string NodeType { get; set; } = "Root";
     [NodeMeta] public string NodeName { get; set; } = "Root";
-    [NodeMeta] public string NodeCategory { get; set; } = "Basic Nodes";
+    [NodeMeta] public string NodeCategory { get; set; } = "Root";
     [NodeMeta] public Vector2 NodePositionOffset { get; set; } = Vector2.Zero;
     
     #endregion
@@ -91,7 +92,7 @@ public partial class NodeMeta : Resource
         
     }
 
-    public NodeMeta(BTGraphNode owner, Dictionary data)
+    public NodeMeta(BTGraphNode owner)
     {
         Owner = owner;
         
@@ -102,9 +103,9 @@ public partial class NodeMeta : Resource
             .ToList();
     }
     
-    public Godot.Collections.Dictionary Serialize()
+    public Dictionary Serialize()
     {
-        var data = new Godot.Collections.Dictionary();
+        var data = new Dictionary();
     	
         foreach (var property in _metaPropertyInfo)
         {
@@ -114,13 +115,17 @@ public partial class NodeMeta : Resource
         return data;
     }
 
-    public void Deserialize(Godot.Collections.Dictionary data)
+    public void Deserialize(Dictionary data)
     {
-        if (data == null) return;
-    	
+        if (data == null || Owner == null) return;
+        
         foreach (var kvp in data)
         {
             Set((string)kvp.Key, kvp.Value);
         }
+        
+        Owner.Name = $"{NodeName}_1";;
+        Owner.Title = NodeName;
+        Owner.PositionOffset = NodePositionOffset;
     }
 }

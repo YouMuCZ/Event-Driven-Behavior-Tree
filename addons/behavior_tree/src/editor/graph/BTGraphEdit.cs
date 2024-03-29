@@ -74,11 +74,16 @@ public partial class BTGraphEdit : GraphEdit
 					{"NodePositionOffset", Vector2.Zero}
 				};
 				
+				submenu.Name = nodeCategory;
 				submenu.AddItem(nodeName);
 				submenu.SetItemMetadata(itemIndex, data);
 				itemIndex += 1;
 			}
 			
+			// 4.2 版本
+			// _graphPopupMenu.AddChild(submenu);
+			// _graphPopupMenu.AddSubmenuItem(nodeCategory, nodeCategory);
+			// 4.3 版本
 			_graphPopupMenu.AddSubmenuNodeItem(nodeCategory, submenu);
 		}
 	}
@@ -93,14 +98,7 @@ public partial class BTGraphEdit : GraphEdit
 		{
 			var positionOffset = data["NodePositionOffset"].AsVector2();
 			data["NodePositionOffset"] = new Vector2(positionOffset.X + 50, positionOffset.Y + 50);
-			
-			var nodeType = (string)data["NodeType"];
-			switch (nodeType)
-			{
-				case "Root":
-					CreateNode<BTGraphNode>(data);
-					break;
-			}
+			CreateNode<BTGraphNode>(data);
 		}
 	}
 	
@@ -236,10 +234,7 @@ public partial class BTGraphEdit : GraphEdit
 		var nodeScene = _nodesScenes["Root"];
 		var newNode = nodeScene.Instantiate<T>();
 		
-		newNode.Setup(this, data);
-		// newNode.Title = $"{newNode.Meta.NodeName}_1";
-		newNode.Name = $"{newNode.Meta.NodeName}_1";
-		newNode.PositionOffset = _cursorPos;
+		newNode.Initialize(this, data);
 
 		AddChild(newNode, true);
 		_nodes.Add(newNode.Name, newNode);
@@ -363,19 +358,8 @@ public partial class BTGraphEdit : GraphEdit
 
 		foreach (var d in data.Nodes)
 		{
-			var nodeType = (string)d["NodeType"];
-			switch (nodeType)
-			{
-				case "Root":
-					CreateNode<BTGraphNodeRoot>(d);
-					break;
-			}
+			CreateNode<BTGraphNode>(data:d);
 		}
-
-		// foreach (var kvp in _nodes)
-		// {
-		// 	kvp.Value.Meta.DeserializeDone();
-		// }
 
 		foreach (var c in data.Connection)
 		{

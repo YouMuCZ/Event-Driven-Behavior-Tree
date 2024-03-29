@@ -70,6 +70,7 @@ public partial class FileManager : Node
 			Filename = filename,
 			Filepath = filepath,
 		};
+		
 		editor.LoadData(data);
 		Workspace.AddEditor(editor);
 		ResourceSaver.Save(data, filepath);

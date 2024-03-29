@@ -11,7 +11,10 @@ public partial class BehaviorTree : Resource
     [Export] public string EngineVersion = Engine.GetVersionInfo()["string"].ToString();
     [Export] public string PluginVersion = BehaviorTreePlugin.MConfigFile.GetValue("plugin", "version", "1.0.0").ToString();
 
-    [Export] public Array<Dictionary> Nodes = new (){new Dictionary {{"NodeType", "Root"}},};
+    [Export] public Array<Dictionary> Nodes = new (){
+        new Dictionary { {"NodeType", "Root"}, {"NodeName", "Root"}, {"NodeCategory", "Root"} }
+    };
+    
     [Export] public Array<Dictionary> Connection = new ();
     
     private BehaviorTreePlayer _treePlayer;

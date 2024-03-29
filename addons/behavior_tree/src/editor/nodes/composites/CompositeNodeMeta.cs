@@ -17,7 +17,7 @@ public partial class CompositeNodeMeta : NodeMeta
         // 可以在这里进行初始化操作
     }
 
-    public CompositeNodeMeta(BTGraphNode owner, Dictionary data) : base(owner, data)
+    public CompositeNodeMeta(BTGraphNode owner) : base(owner)
     {
         _children = new Array<NodeMeta>();
     }

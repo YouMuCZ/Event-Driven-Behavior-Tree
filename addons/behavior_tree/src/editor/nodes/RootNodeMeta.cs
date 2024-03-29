@@ -10,7 +10,7 @@ public partial class RootNodeMeta : NodeMeta
         
     }
     
-    public RootNodeMeta(BTGraphNode owner, Dictionary data) : base(owner, data)
+    public RootNodeMeta(BTGraphNode owner) : base(owner)
     {
         
     }

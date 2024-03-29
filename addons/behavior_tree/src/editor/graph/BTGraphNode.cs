@@ -39,9 +39,9 @@ public partial class BTGraphNode : GraphNode
     /// </summary>
     /// <param name="graphEdit"></param>
     /// <param name="data"></param>
-    public void Setup(BTGraphEdit graphEdit, Dictionary data)
+    public void Initialize(BTGraphEdit graphEdit, Dictionary data)
     {
-	    Meta = new NodeMeta(this, data);
+	    Meta = new NodeMeta(this);
 	    Meta.Deserialize(data);
 	    
 	    _graphEdit = graphEdit;
