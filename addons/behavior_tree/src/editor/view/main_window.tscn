@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://cqadvabhxs0oi"]
 
-[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/MainWindow.cs" id="1_3hk21"]
-[ext_resource type="PackedScene" uid="uid://bmvil7yqninxd" path="res://addons/behavior_tree/src/scenes/workspace.tscn" id="2_ipnih"]
-[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/files/FileManager.cs" id="3_pwvor"]
-[ext_resource type="Texture2D" uid="uid://cc1ufhyvste6m" path="res://addons/behavior_tree/resources/icons/Forward.svg" id="3_qjbb3"]
-[ext_resource type="Texture2D" uid="uid://bnlg07ckbg0w" path="res://addons/behavior_tree/resources/icons/Back.svg" id="4_dbjcw"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/view/MainWindow.cs" id="1_es4xe"]
+[ext_resource type="PackedScene" uid="uid://bmvil7yqninxd" path="res://addons/behavior_tree/src/editor/view/workspace.tscn" id="2_oj46j"]
+[ext_resource type="Texture2D" uid="uid://bnlg07ckbg0w" path="res://addons/behavior_tree/resources/icons/Back.svg" id="3_1sirs"]
+[ext_resource type="Texture2D" uid="uid://cc1ufhyvste6m" path="res://addons/behavior_tree/resources/icons/Forward.svg" id="4_8v02q"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/file/FileManager.cs" id="5_kc577"]
 
 [node name="MainWindow" type="Control"]
 layout_mode = 3
@@ -14,7 +14,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-script = ExtResource("1_3hk21")
+script = ExtResource("1_es4xe")
 
 [node name="Main" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -60,7 +60,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Variables"
 
-[node name="Workspace" parent="Main/Panel" instance=ExtResource("2_ipnih")]
+[node name="Workspace" parent="Main/Panel" instance=ExtResource("2_oj46j")]
 layout_mode = 2
 
 [node name="StatusBar" type="HBoxContainer" parent="Main"]
@@ -71,8 +71,8 @@ custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
-texture_normal = ExtResource("4_dbjcw")
-texture_pressed = ExtResource("3_qjbb3")
+texture_normal = ExtResource("3_1sirs")
+texture_pressed = ExtResource("4_8v02q")
 stretch_mode = 3
 
 [node name="Version" type="LinkButton" parent="Main/StatusBar"]
@@ -80,6 +80,7 @@ custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
+text = "1.1"
 
 [node name="Window" type="Control" parent="Main"]
 layout_mode = 2
@@ -109,4 +110,4 @@ filters = PackedStringArray("*.tres; Behavior Tree")
 layout_mode = 2
 
 [node name="FileManager" type="Node" parent="."]
-script = ExtResource("3_pwvor")
+script = ExtResource("5_kc577")

@@ -22,7 +22,8 @@ public partial class BTGraphEdit : GraphEdit
 	private readonly System.Collections.Generic.Dictionary<string, BTGraphNode> _nodes = new ();
 	private readonly System.Collections.Generic.Dictionary<string, PackedScene> _nodesScenes = new ()
 	{
-		{"Root", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/nodes/root_node.tscn")},
+		{"Root", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/view/nodes/root_node.tscn")},
+		{"Composite", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/view/nodes/composite_node.tscn")}
 	};
 	
 	// Called when the node enters the scene tree for the first time.
@@ -229,9 +230,9 @@ public partial class BTGraphEdit : GraphEdit
 	/// <param name="data"></param>
 	/// <param name="menu"> 右键菜单创建的节点 </param>
 	/// <typeparam name="T"></typeparam>
-	public T CreateNode<T>(Dictionary data = null, bool menu = false) where T : BTGraphNode
+	public T CreateNode<T>(Dictionary data, bool menu = false) where T : BTGraphNode
 	{
-		var nodeScene = _nodesScenes["Root"];
+		var nodeScene = _nodesScenes[(string)data["NodeCategory"]];
 		var newNode = nodeScene.Instantiate<T>();
 		
 		newNode.Initialize(this, data);

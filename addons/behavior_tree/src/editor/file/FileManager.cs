@@ -7,7 +7,7 @@ public partial class FileManager : Node
 	public MainWindow MainWindow;
 	public Workspace Workspace;
 	
-	private PackedScene _graphEdit = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/graph/graph_eidt.tscn");
+	private PackedScene _graphEdit = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/graph/graph_eidt.tscn");
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()

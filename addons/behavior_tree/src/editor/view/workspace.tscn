@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bmvil7yqninxd"]
 
-[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/Workspace.cs" id="1_ia8yp"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/view/Workspace.cs" id="1_ia8yp"]
 
 [node name="Workspace" type="VBoxContainer"]
 anchors_preset = 15

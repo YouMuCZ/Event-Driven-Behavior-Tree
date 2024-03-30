@@ -8,7 +8,7 @@ public partial class BehaviorTreePlugin : EditorPlugin
 	public static readonly ConfigFile MConfigFile = new ();
 		
 	private MainWindow _mainPanelInstance;
-	private PackedScene _mainPanel = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/scenes/main_window.tscn");
+	private PackedScene _mainPanel = ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/main_window.tscn");
 		
 	public override void _EnterTree()
 	{

@@ -6,7 +6,7 @@ public partial class CompositeNodeMeta : NodeMeta
 {
     [NodeMeta] public new string NodeName { get; set; } = "Composite";
     [NodeMeta] public new string NodeType { get; set; } = "Composite";
-    [NodeMeta] public new string NodeCategory { get; set; } = "Composites";
+    [NodeMeta] public new string NodeCategory { get; set; } = "Composite";
     
     /// <summary> Storage composite's children node. </summary>
     private Array<NodeMeta> _children;

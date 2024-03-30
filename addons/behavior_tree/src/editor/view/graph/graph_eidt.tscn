@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bu0thuoohc23v"]
 
-[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/graph/BTGraphEdit.cs" id="1_mn3k0"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/editor/view/graph/BTGraphEdit.cs" id="1_mn3k0"]
 
 [node name="GraphEidt" type="GraphEdit"]
 anchors_preset = 15
@@ -14,6 +14,8 @@ script = ExtResource("1_mn3k0")
 
 [node name="GraphPopupMenu" type="PopupMenu" parent="."]
 title = "Menu"
+item_count = 1
+item_0/text = "Composite"
 
 [node name="NodePopupMenu" type="PopupMenu" parent="."]
 item_count = 3
