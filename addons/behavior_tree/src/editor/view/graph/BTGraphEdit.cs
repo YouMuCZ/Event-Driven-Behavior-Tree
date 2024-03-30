@@ -22,8 +22,9 @@ public partial class BTGraphEdit : GraphEdit
 	private readonly System.Collections.Generic.Dictionary<string, BTGraphNode> _nodes = new ();
 	private readonly System.Collections.Generic.Dictionary<string, PackedScene> _nodesScenes = new ()
 	{
-		{"Root", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/view/nodes/root_node.tscn")},
-		{"Composite", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/view/nodes/composite_node.tscn")}
+		{"Root", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/root_node.tscn")},
+		{"Composite", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/composite_node.tscn")},
+		{"Condition", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/condition_node.tscn")}
 	};
 	
 	// Called when the node enters the scene tree for the first time.

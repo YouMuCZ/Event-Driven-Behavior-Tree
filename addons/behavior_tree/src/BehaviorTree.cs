@@ -1,10 +1,13 @@
 using Godot;
 using System;
+using System.Collections;
 using Godot.Collections;
 
 [Tool]
 public partial class BehaviorTree : Resource
 {
+    #region behavior tree parm meta
+    
     [Export] public string FileDir;
     [Export] public string Filename;
     [Export] public string Filepath;
@@ -17,7 +20,11 @@ public partial class BehaviorTree : Resource
     
     [Export] public Array<Dictionary> Connection = new ();
     
+    #endregion
+    
     private BehaviorTreePlayer _treePlayer;
+    private Stack _nodeStack;
+    
     public void Initialize(BehaviorTreePlayer treePlayer)
     {
         _treePlayer = treePlayer;
@@ -26,6 +33,11 @@ public partial class BehaviorTree : Resource
     public bool Start()
     {
         return true;
+    }
+
+    public void Interrupt()
+    {
+        
     }
 
     public bool Stop()

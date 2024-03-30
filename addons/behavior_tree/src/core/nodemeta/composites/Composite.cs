@@ -2,24 +2,22 @@ using Godot;
 using Godot.Collections;
 
 [Tool]
-public partial class CompositeNodeMeta : NodeMeta
+public partial class Composite : NodeMeta
 {
-    [NodeMeta] public new string NodeName { get; set; } = "Composite";
-    [NodeMeta] public new string NodeType { get; set; } = "Composite";
-    [NodeMeta] public new string NodeCategory { get; set; } = "Composite";
+    [NodeMeta] public string NodeCategory { get; set; } = "Composite";
     
     /// <summary> Storage composite's children node. </summary>
-    private Array<NodeMeta> _children;
+    private Array _children;
     
     // 无参数构造函数
-    public CompositeNodeMeta()
+    public Composite()
     {
         // 可以在这里进行初始化操作
     }
 
-    public CompositeNodeMeta(BTGraphNode owner) : base(owner)
+    public Composite(BTGraphNode graphNode) : base(graphNode)
     {
-        _children = new Array<NodeMeta>();
+        _children = new Array();
     }
     
     public override Array<Dictionary> _GetPropertyList()

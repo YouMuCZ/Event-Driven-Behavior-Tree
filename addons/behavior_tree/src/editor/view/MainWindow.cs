@@ -16,14 +16,6 @@ public partial class MainWindow : Control
 	private FileManager _fileManager;
 	private TextureButton _lPanelButton;
 	private VSplitContainer _variablesPanel;
-
-	private bool _debug;
-
-	public bool DebugMode
-	{
-		set => _debug = value;
-		get => _debug;
-	}
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/behavior_tree/src/editor/view/graph/BTGraphNode.cs" id="1_5rbpn"]
 
-[node name="Root" type="GraphNode"]
+[node name="GraphNode" type="GraphNode"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

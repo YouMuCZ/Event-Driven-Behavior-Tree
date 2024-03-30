@@ -4,7 +4,7 @@ using System;
 
 public class Enums
 {
-    /// <summary> 节点状态 </summary>
+    /// <summary> 节点运行状态 </summary>
     public enum State
     {
         Failure,
