@@ -4,7 +4,7 @@ using Godot.Collections;
 [Tool]
 public partial class Composite : NodeMeta
 {
-    [NodeMeta] public string NodeCategory { get; set; } = "Composite";
+    [NodeMeta] public new string NodeCategory { get; set; } = "Composites";
     
     /// <summary> Storage composite's children node. </summary>
     private Array _children;

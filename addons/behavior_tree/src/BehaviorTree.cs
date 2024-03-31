@@ -23,7 +23,6 @@ public partial class BehaviorTree : Resource
     #endregion
     
     private BehaviorTreePlayer _treePlayer;
-    private Stack _nodeStack;
     
     public void Initialize(BehaviorTreePlayer treePlayer)
     {

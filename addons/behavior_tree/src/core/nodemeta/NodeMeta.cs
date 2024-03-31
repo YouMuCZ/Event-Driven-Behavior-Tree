@@ -31,24 +31,28 @@ public class NodeMetaStorage
             
             var nodeType = "";
             var nodeName = "";
-            var nodeCategory = "";
+            var nodeCategory = "Root";
             
             // 获取类中已经初始化的参数属性
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var property in properties)
             {
-                if (property.GetCustomAttributes(typeof(NodeMetaAttribute), true).Any())
-                {
-                    if (property.Name == "NodeCategory") nodeCategory = (string)property.GetValue(Activator.CreateInstance(type));
-                    if (property.Name == "NodeType") nodeType = (string)property.GetValue(Activator.CreateInstance(type));
-                    if (property.Name == "NodeName") nodeName = (string)property.GetValue(Activator.CreateInstance(type));
-                    
-                    // GD.Print($"Property Name: {property.Name}, Value:  {property.GetValue(Activator.CreateInstance(type))}");
-                }
+                if (property.Name == "NodeCategory") nodeCategory = (string)property.GetValue(Activator.CreateInstance(type));
+                if (property.Name == "NodeType") nodeType = (string)property.GetValue(Activator.CreateInstance(type));
+                if (property.Name == "NodeName") nodeName = (string)property.GetValue(Activator.CreateInstance(type));
+                
+                // if (property.GetCustomAttributes(typeof(NodeMetaAttribute), true).Any())
+                // {
+                //     if (property.Name == "NodeCategory") nodeCategory = (string)property.GetValue(Activator.CreateInstance(type));
+                //     if (property.Name == "NodeType") nodeType = (string)property.GetValue(Activator.CreateInstance(type));
+                //     if (property.Name == "NodeName") nodeName = (string)property.GetValue(Activator.CreateInstance(type));
+                //     
+                //     // GD.Print($"Property Name: {property.Name}, Value:  {property.GetValue(Activator.CreateInstance(type))}");
+                // }
             }
             
             // TODO: 后续应该有config专门用来做编辑器设置用
-            if (nodeCategory == null || nodeType == null || nodeType == "Root") continue;
+            if (nodeType is null or "Root") continue;
             
             if (NodeMetaCategory.TryGetValue(nodeCategory, out var categories))
             {
@@ -93,6 +97,7 @@ public partial class NodeMeta : Resource
     [NodeMeta] public string NodeType { get; set; }
     /// <summary> 节点名称,显示到<see cref="GraphNode"/>的<see cref="GraphNode.Title"/>参数上 </summary>
     [NodeMeta] public string NodeName { get; set; }
+
     /// <summary> 当前节点类型,注册到<see cref="GraphEdit"/>的<see cref="PopupMenu"/>的子菜单栏中 </summary>
     [NodeMeta] public string NodeCategory { get; set; }
     /// <summary> <see cref="GraphNode.PositionOffset"/> </summary>

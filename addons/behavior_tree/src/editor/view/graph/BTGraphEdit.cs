@@ -23,8 +23,9 @@ public partial class BTGraphEdit : GraphEdit
 	private readonly System.Collections.Generic.Dictionary<string, PackedScene> _nodesScenes = new ()
 	{
 		{"Root", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/root_node.tscn")},
-		{"Composite", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/composite_node.tscn")},
-		{"Condition", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/condition_node.tscn")}
+		{"Composites", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/composite_node.tscn")},
+		{"Condition", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/condition_node.tscn")},
+		{"Task", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/task_node.tscn")}
 	};
 	
 	// Called when the node enters the scene tree for the first time.
@@ -41,7 +42,8 @@ public partial class BTGraphEdit : GraphEdit
 		
 		_graphPopupMenu = GetNode<PopupMenu>("GraphPopupMenu");
 		_nodePopupMenu = GetNode<PopupMenu>("NodePopupMenu");
-		_nodePopupMenu.IdPressed += OnNodePopupMenuPressed;
+		
+		_graphPopupMenu.Clear();
 		
 		PopupRequest += OnShowMenu;
 		NodeSelected += OnNodeSelected;
@@ -50,20 +52,33 @@ public partial class BTGraphEdit : GraphEdit
 		ConnectionToEmpty += OnConnectionToEmpty;
 		ConnectionRequest += OnConnectionRequest;
 		DisconnectionRequest += OnDisconnectionRequest;
+		_nodePopupMenu.IdPressed += OnNodePopupMenuPressed;
 	}
 	
 	private void Setup()
 	{
-		foreach (var kvp in NodeMetaStorage.NodeMetaCategory)
+		// 使用lambda表达式来适配事件处理器签名
+		_graphPopupMenu.IndexPressed += (idx) => OnGraphPopupMenuPressed(_graphPopupMenu, (int)idx);
+		
+		var rootItemIndex = -1;
+		foreach (var (nodeCategory, value) in NodeMetaStorage.NodeMetaCategory)
 		{
-			var nodeCategory = kvp.Key;
-			var submenu = new PopupMenu();
-			submenu.Name = kvp.Key;
-			// 使用lambda表达式来适配事件处理器签名
-			submenu.IndexPressed += (index) => OnGraphPopupMenuPressed(submenu, (int)index);
+			PopupMenu menu;
+			var submenuItemIndex = -1;
+
+			// root类型节点放到根菜单上
+			if (nodeCategory == "Root")
+			{
+				menu = _graphPopupMenu;
+			}
+			else
+			{
+				menu = new PopupMenu();
+				menu.IndexPressed += (idx) => OnGraphPopupMenuPressed(menu, (int)idx);
+				_graphPopupMenu.AddSubmenuNodeItem(nodeCategory, menu);
+			}
 			
-			var itemIndex = 0;
-			foreach (var variable in kvp.Value)
+			foreach (var variable in value)
 			{
 				var nodeType = variable["NodeType"];
 				var nodeName = variable["NodeName"];
@@ -76,17 +91,16 @@ public partial class BTGraphEdit : GraphEdit
 					{"NodePositionOffset", Vector2.Zero}
 				};
 				
-				submenu.Name = nodeCategory;
-				submenu.AddItem(nodeName);
-				submenu.SetItemMetadata(itemIndex, data);
-				itemIndex += 1;
+				menu.Name = nodeCategory;
+				menu.AddItem(nodeName);
+
+				var index = -1;
+				if (nodeCategory == "Root") index = ++rootItemIndex;
+				else index = ++submenuItemIndex;
+				
+				menu.SetItemMetadata(index, data);
 			}
 			
-			// 4.2 版本
-			// _graphPopupMenu.AddChild(submenu);
-			// _graphPopupMenu.AddSubmenuItem(nodeCategory, nodeCategory);
-			// 4.3 版本
-			_graphPopupMenu.AddSubmenuNodeItem(nodeCategory, submenu);
 		}
 	}
 

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cwkm8bd3llfya"]
+
+[ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTree.cs" id="1_qqe3e"]
+
+[resource]
+script = ExtResource("1_qqe3e")
+FileDir = "res://demo"
+Filename = "default.tres"
+Filepath = "res://demo/default.tres"
+EngineVersion = "4.3-dev4 (official)"
+PluginVersion = "1.1"
+Nodes = [{
+"NodeCategory": "Root",
+"NodeName": "Root",
+"NodeType": "Root"
+}]
+Connection = []
