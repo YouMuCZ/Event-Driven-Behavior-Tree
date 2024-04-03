@@ -1,0 +1,52 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dhjfsb0b5hhp6"]
+
+[ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTree.cs" id="1_ptkf0"]
+
+[resource]
+script = ExtResource("1_ptkf0")
+FileDir = "res://"
+Filename = "1.tres"
+Filepath = "res://1.tres"
+EngineVersion = "4.3-dev4 (official)"
+PluginVersion = "1.1"
+NodeData = [{
+"ExecuteIndex": 0,
+"NodeCategory": "Root",
+"NodeName": "RootNode",
+"NodePositionOffset": Vector2(0, 0),
+"NodeType": "Root"
+}, {
+"ExecuteIndex": 1,
+"NodeCategory": "Composites",
+"NodeName": "CompositeNode",
+"NodePositionOffset": Vector2(200, 100),
+"NodeType": "Sequence"
+}, {
+"ExecuteIndex": 3,
+"NodeCategory": "Task",
+"NodeName": "Task2",
+"NodePositionOffset": Vector2(520, 160),
+"NodeType": "Task"
+}, {
+"ExecuteIndex": 2,
+"NodeCategory": "Task",
+"NodeName": "Task",
+"NodePositionOffset": Vector2(500, 40),
+"NodeType": "Task"
+}]
+Connection = Array[Dictionary]([{
+"from_node": &"RootNode",
+"from_port": 0,
+"to_node": &"CompositeNode",
+"to_port": 0
+}, {
+"from_node": &"CompositeNode",
+"from_port": 0,
+"to_node": &"Task",
+"to_port": 0
+}, {
+"from_node": &"CompositeNode",
+"from_port": 0,
+"to_node": &"Task2",
+"to_port": 0
+}])

@@ -1,15 +1,15 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cwkm8bd3llfya"]
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://b3h6v7lc1pxs6"]
 
-[ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTree.cs" id="1_qqe3e"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTree.cs" id="1_qxk3r"]
 
 [resource]
-script = ExtResource("1_qqe3e")
+script = ExtResource("1_qxk3r")
 FileDir = "res://demo"
 Filename = "default.tres"
 Filepath = "res://demo/default.tres"
 EngineVersion = "4.3-dev4 (official)"
 PluginVersion = "1.1"
-Nodes = [{
+NodeData = [{
 "NodeCategory": "Root",
 "NodeName": "Root",
 "NodeType": "Root"

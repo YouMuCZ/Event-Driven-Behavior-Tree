@@ -18,6 +18,8 @@ public partial class BTGraphEdit : GraphEdit
 	private Vector2 _cursorPos = Vector2.Zero;
 	/// <summary>copy and paste temp data.</summary>
 	private Array<Dictionary> _copyNodeData = new();
+	/// <summary> 根节点,每个行为树只有一个起始根节点 </summary>
+	private RootNode _rootNode;
 	public BehaviorTree BehaviorTreeData { get; private set; } = new ();
 	private readonly System.Collections.Generic.Dictionary<string, BTGraphNode> _nodes = new ();
 	private readonly System.Collections.Generic.Dictionary<string, PackedScene> _nodesScenes = new ()
@@ -52,6 +54,7 @@ public partial class BTGraphEdit : GraphEdit
 		ConnectionToEmpty += OnConnectionToEmpty;
 		ConnectionRequest += OnConnectionRequest;
 		DisconnectionRequest += OnDisconnectionRequest;
+		EndNodeMove += OnEndNodeMove;
 		_nodePopupMenu.IdPressed += OnNodePopupMenuPressed;
 	}
 	
@@ -65,6 +68,7 @@ public partial class BTGraphEdit : GraphEdit
 		{
 			PopupMenu menu;
 			var submenuItemIndex = -1;
+			rootItemIndex++;
 
 			// root类型节点放到根菜单上
 			if (nodeCategory == "Root")
@@ -77,22 +81,21 @@ public partial class BTGraphEdit : GraphEdit
 				menu.IndexPressed += (idx) => OnGraphPopupMenuPressed(menu, (int)idx);
 				_graphPopupMenu.AddSubmenuNodeItem(nodeCategory, menu);
 			}
-			
+
 			foreach (var variable in value)
 			{
 				var nodeType = variable["NodeType"];
-				var nodeName = variable["NodeName"];
 				
 				var data = new Dictionary
 				{
 					{ "NodeType", nodeType },
-					{ "NodeName", nodeName},
+					{ "NodeName", nodeType},
 					{"NodeCategory", nodeCategory},
 					{"NodePositionOffset", Vector2.Zero}
 				};
 				
 				menu.Name = nodeCategory;
-				menu.AddItem(nodeName);
+				menu.AddItem(nodeType);
 
 				var index = -1;
 				if (nodeCategory == "Root") index = ++rootItemIndex;
@@ -237,6 +240,11 @@ public partial class BTGraphEdit : GraphEdit
 		}
 	}
 	
+	private void OnEndNodeMove()
+	{
+		ReorderNodes();
+	}
+	
 	#endregion
 	
 	/// <summary>
@@ -251,7 +259,6 @@ public partial class BTGraphEdit : GraphEdit
 		var newNode = nodeScene.Instantiate<T>();
 		
 		newNode.Initialize(this, data);
-
 		AddChild(newNode, true);
 		_nodes.Add(newNode.Name, newNode);
 		
@@ -320,7 +327,7 @@ public partial class BTGraphEdit : GraphEdit
 	public List<string> GetNextNodes(string nodeName)
 	{
 		var nodes = (
-			from connection in GetConnectionList() where (string)connection["from"] == nodeName select (string)connection["to"]
+			from connection in GetConnectionList() where (string)connection["from_node"] == nodeName select (string)connection["to_node"]
 			).ToList();
 		return nodes;
 	}
@@ -372,15 +379,18 @@ public partial class BTGraphEdit : GraphEdit
 
 		Name = data.Filename?.Split(".")[0];
 
-		foreach (var d in data.Nodes)
+		foreach (var d in data.NodeData)
 		{
-			CreateNode<BTGraphNode>(data:d);
+			var newNode = CreateNode<BTGraphNode>(data:d);
+			if (newNode.Meta.NodeType == "Root") _rootNode = (RootNode)newNode;
 		}
 
 		foreach (var c in data.Connection)
 		{
 			ConnectNode((StringName)c["from_node"], (int)c["from_port"], (StringName)c["to_node"], (int)c["to_port"]);
 		}
+
+		ReorderNodes();
 	}
 	
 	/// <summary>
@@ -395,10 +405,46 @@ public partial class BTGraphEdit : GraphEdit
 			var nodeData = kvp.Value.Meta.Serialize();
 			if (nodeData.Any()) data.Add(nodeData);
 		}
-		BehaviorTreeData.Nodes = data;
+		BehaviorTreeData.NodeData = data;
 		
 		BehaviorTreeData.Connection = GetConnectionList();
 		return BehaviorTreeData;
+	}
+	
+	/// <summary>
+	/// 对所有节点进行排序,计算出执行索引,按照从左到右,从上到下的顺序优先级排列
+	/// </summary>
+	private void ReorderNodes()
+	{
+		PreorderTraversal(_rootNode.Name, 0);
+	}
+
+	private void PreorderTraversal(string name, int index)
+	{
+		if (!_nodes.TryGetValue(name, out var root)) return;
+		
+		var nextNodes = GetNextNodes(name);
+
+		root.Title = $"{root.Meta.NodeType} # {index}";
+		root.Meta.ExecuteIndex = index;
+
+		if (root.Meta.NodeCategory == "Composites")
+		{
+			root.ProcessExecuteIndex();
+			
+			var composites = root.Meta.Children;
+			foreach (var composite in composites) 
+			{
+				PreorderTraversal(composite.NodeName, ++index);
+			}
+		}
+		else
+		{
+			foreach (var childName in nextNodes)
+			{
+				PreorderTraversal(childName, ++index);
+			}
+		}
 	}
 
 	#region delegate && event

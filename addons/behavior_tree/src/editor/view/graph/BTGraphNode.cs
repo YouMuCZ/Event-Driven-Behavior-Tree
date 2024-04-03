@@ -41,8 +41,7 @@ public partial class BTGraphNode : GraphNode
     /// <param name="data"></param>
     public void Initialize(BTGraphEdit graphEdit, Dictionary data)
     {
-	    Meta = new NodeMeta(this);
-	    Meta.Deserialize(data);
+	    Meta = new NodeMeta(this, data);
 	    
 	    _graphEdit = graphEdit;
 	    _graphEdit.NodeRemoved += OnNodeRemoved;
@@ -51,5 +50,16 @@ public partial class BTGraphNode : GraphNode
     protected virtual void OnNodeRemoved(BTGraphNode node)
     {
 	    
+    }
+    
+    public void ProcessExecuteIndex()
+    {
+	    var nextNodes = _graphEdit.GetNextNodes(Name);
+	    
+	    Meta.Children = new Array<NodeMeta>(nextNodes
+		    .Select(nodeName => _graphEdit.GetNodeByName(nodeName)) // 将nodeName转换为节点对象
+		    .Select(node => node.Meta) // 从每个节点获取Meta属性
+		    .OrderBy(meta => meta.NodePositionOffset.Y) // 根据NodePositionOffset.Y属性进行排序
+		); 
     }
 }

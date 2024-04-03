@@ -14,7 +14,7 @@ public partial class BehaviorTree : Resource
     [Export] public string EngineVersion = Engine.GetVersionInfo()["string"].ToString();
     [Export] public string PluginVersion = BehaviorTreePlugin.MConfigFile.GetValue("plugin", "version", "1.0.0").ToString();
 
-    [Export] public Array<Dictionary> Nodes = new (){
+    [Export] public Array<Dictionary> NodeData = new (){
         new Dictionary { {"NodeType", "Root"}, {"NodeName", "Root"}, {"NodeCategory", "Root"} }
     };
     
@@ -23,10 +23,17 @@ public partial class BehaviorTree : Resource
     #endregion
     
     private BehaviorTreePlayer _treePlayer;
+    private Dictionary _nodeMetas = new ();
     
     public void Initialize(BehaviorTreePlayer treePlayer)
     {
         _treePlayer = treePlayer;
+
+        foreach (var data in NodeData)
+        {
+            var meta = new NodeMeta(data);
+            _nodeMetas.Add(meta.NodeName, meta);
+        }
     }
 
     public bool Start()

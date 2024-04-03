@@ -10,6 +10,7 @@ using Godot.Collections;
 /// <summary>
 /// 通过特性在程序集中获取所有注册节点
 /// </summary>
+[Tool]
 public class NodeMetaStorage
 {
     public static System.Collections.Generic.Dictionary<string, List<System.Collections.Generic.Dictionary<string, string>>> NodeMetaCategory = new ();
@@ -29,9 +30,8 @@ public class NodeMetaStorage
         {
             if (!type.IsSubclassOf(typeof(NodeMeta))) continue;
             
-            var nodeType = "";
-            var nodeName = "";
-            var nodeCategory = "Root";
+            string nodeType = null;
+            string nodeCategory = null;
             
             // 获取类中已经初始化的参数属性
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -39,7 +39,7 @@ public class NodeMetaStorage
             {
                 if (property.Name == "NodeCategory") nodeCategory = (string)property.GetValue(Activator.CreateInstance(type));
                 if (property.Name == "NodeType") nodeType = (string)property.GetValue(Activator.CreateInstance(type));
-                if (property.Name == "NodeName") nodeName = (string)property.GetValue(Activator.CreateInstance(type));
+                // if (property.Name == "NodeName") nodeName = (string)property.GetValue(Activator.CreateInstance(type));
                 
                 // if (property.GetCustomAttributes(typeof(NodeMetaAttribute), true).Any())
                 // {
@@ -52,16 +52,16 @@ public class NodeMetaStorage
             }
             
             // TODO: 后续应该有config专门用来做编辑器设置用
-            if (nodeType is null or "Root") continue;
+            if (nodeType is null or "Root" || nodeCategory is null) continue;
             
             if (NodeMetaCategory.TryGetValue(nodeCategory, out var categories))
             {
-                var map = new System.Collections.Generic.Dictionary<string, string> { { "NodeType", nodeType }, {"NodeName", nodeName} };
+                var map = new System.Collections.Generic.Dictionary<string, string> { { "NodeType", nodeType }};
                 categories.Add(map);
             }
             else
             {
-                var map = new System.Collections.Generic.Dictionary<string, string> { { "NodeType", nodeType }, {"NodeName", nodeName} };
+                var map = new System.Collections.Generic.Dictionary<string, string> { { "NodeType", nodeType }};
                 var newTypes = new List<System.Collections.Generic.Dictionary<string, string>> { map };
                 NodeMetaCategory.Add(nodeCategory, newTypes);
             }
@@ -86,6 +86,9 @@ public partial class NodeMeta : Resource
     /// <summary> <see cref="BehaviorTree"/> </summary>
     private BehaviorTree _behaviorTree;
 
+    /// <summary> Storage composite's children node. </summary>
+    public Array<NodeMeta> Children { set; get; } = new ();
+
     #endregion
     
     #region Serialie/Deserialize meta
@@ -93,15 +96,27 @@ public partial class NodeMeta : Resource
     /// <summary>需要存储到Resource本地文件里的参数和参数值。</summary>
     private readonly List<PropertyInfo> _metaPropertyInfo;
     
-    /// <summary> 节点类型 </summary>
+    /// <summary> 节点类型,将会展示到<see cref="GraphNode.Title"/>作为节点面板名称. </summary>
     [NodeMeta] public string NodeType { get; set; }
-    /// <summary> 节点名称,显示到<see cref="GraphNode"/>的<see cref="GraphNode.Title"/>参数上 </summary>
-    [NodeMeta] public string NodeName { get; set; }
+    /// <summary> 节点名称,等价于<see cref="GraphNode.Name"/>由于<see cref="GraphEdit"/>是以Name作为节点索引参数. </summary>
+    [NodeMeta] public string NodeName
+    {
+        private set { }
+        get => _graphNode?.Name;
+    }
 
     /// <summary> 当前节点类型,注册到<see cref="GraphEdit"/>的<see cref="PopupMenu"/>的子菜单栏中 </summary>
     [NodeMeta] public string NodeCategory { get; set; }
+
     /// <summary> <see cref="GraphNode.PositionOffset"/> </summary>
-    [NodeMeta] public Vector2 NodePositionOffset { get; set; } = Vector2.Zero;
+    [NodeMeta]
+    public Vector2 NodePositionOffset
+    {
+        private set { }
+        get => _graphNode?.PositionOffset ?? Vector2.Zero;
+    }
+    /// <summary> 执行索引,标记该节点在行为树中被执行的顺序</summary>
+    [NodeMeta] public int ExecuteIndex { get; set; }
     
     /// <summary>
     /// 序列化meta数据,用来存储到resource本地文件上
@@ -131,10 +146,6 @@ public partial class NodeMeta : Resource
         {
             Set((string)kvp.Key, kvp.Value);
         }
-        
-        _graphNode.Name = $"{NodeName}_1";;
-        _graphNode.Title = NodeName;
-        _graphNode.PositionOffset = NodePositionOffset;
     }
     
     #endregion
@@ -154,9 +165,15 @@ public partial class NodeMeta : Resource
         
     }
 
-    public NodeMeta(BTGraphNode graphNode)
+    public NodeMeta(BTGraphNode graphNode, Dictionary data)
     {
         _graphNode = graphNode;
+        
+        Deserialize(data);
+        
+        _graphNode.Title = (string)data["NodeType"];
+        _graphNode.Name = (string)data["NodeName"]??NodeType;
+        _graphNode.PositionOffset = (Vector2)data["NodePositionOffset"];
         
         // 加载用作序列化的meta数据
         _metaPropertyInfo = new List<PropertyInfo>();
@@ -164,11 +181,28 @@ public partial class NodeMeta : Resource
             .Where(t => t.GetCustomAttributes(typeof(NodeMetaAttribute), true).Any())
             .ToList();
     }
+    
+    public NodeMeta(Dictionary data)
+    {
+        Deserialize(data);
+    }
 
     #endregion
     
-    public void Initialize()
+    public override Array<Dictionary> _GetPropertyList()
     {
-        
+        var properties = new Array<Dictionary>
+        {
+            new()
+            {
+                { "name", "_children" },
+                { "type", (int)Variant.Type.Array },
+                { "hint", (int)PropertyHint.ResourceType },
+                { "usage", (int)PropertyUsageFlags.Storage},
+                { "hint_string", "NodeMeta" },
+            }
+        };
+
+        return properties;
     }
 }
