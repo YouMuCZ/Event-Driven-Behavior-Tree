@@ -1,7 +1,9 @@
 #if TOOLS
 using Godot;
 
-
+/// <summary>
+/// 基于事件驱动的行为树编辑器,参考自虚幻5行为树插件,https://dev.epicgames.com/documentation/zh-cn/unreal-engine/behavior-trees-in-unreal-engine
+/// </summary>
 [Tool]
 public partial class BehaviorTreePlugin : EditorPlugin
 {

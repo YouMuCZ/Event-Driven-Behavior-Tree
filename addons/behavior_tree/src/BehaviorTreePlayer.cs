@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-[Tool, GlobalClass]
+[GlobalClass]
 public partial class BehaviorTreePlayer : Node
 {
 	private bool _debug;
@@ -45,7 +45,6 @@ public partial class BehaviorTreePlayer : Node
 
 	public void Interrupt()
 	{
-		_behaviorTree.Interrupt();
 		EmitSignal(SignalName.BehaviorTreeInterrupt, _behaviorTree);
 	}
 

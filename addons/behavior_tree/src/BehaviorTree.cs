@@ -1,6 +1,5 @@
 using Godot;
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using Godot.Collections;
 
 [Tool]
@@ -29,7 +28,10 @@ public partial class BehaviorTree : Resource
     #endregion
     
     private BehaviorTreePlayer _treePlayer;
+    private NodeMeta _root;
     private Dictionary _nodeMetas = new ();
+    /// <summary> 当前正在运行的节点栈 </summary>
+    private readonly Stack<NodeMeta> _nodeStack = new();
     
     public void Initialize(BehaviorTreePlayer treePlayer)
     {
@@ -39,21 +41,46 @@ public partial class BehaviorTree : Resource
         {
             var meta = new NodeMeta(data);
             _nodeMetas.Add(meta.NodeName, meta);
-        }
-    }
 
+            if (meta.NodeName == "Root") _root = meta;
+        }
+        
+        _nodeStack.Push(_root);
+    }
+    
+    /// <summary>
+    /// 主动开启当前行为树,如果没有节点或者缺失根节点，则运行失败
+    /// </summary>
+    /// <returns></returns>
     public bool Start()
     {
+        if (_root == null) return false;
+
+        if (_root.Status == Enums.Status.Running) return false;
+
+        _root.Start();
+        
         return true;
     }
-
-    public void Interrupt()
-    {
-        
-    }
-
+    
+    /// <summary>
+    /// 主动停止当前运行中的行为树
+    /// </summary>
+    /// <returns></returns>
     public bool Stop()
     {
+        if (_root.Status != Enums.Status.Running) return false;
+
+        _root.Stop();
+        
         return true;
+    }
+
+    public NodeMeta GetNodeByName(string name)
+    {
+        if (_nodeMetas.TryGetValue(name, out var value))
+            return (NodeMeta)value;
+        
+        return null;
     }
 }

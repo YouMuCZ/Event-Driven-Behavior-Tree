@@ -5,8 +5,9 @@ using System;
 public class Enums
 {
     /// <summary> 节点运行状态 </summary>
-    public enum State
+    public enum Status
     {
+        Free,
         Failure,
         Success,
         Running,

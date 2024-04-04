@@ -79,12 +79,16 @@ public partial class NodeMeta : Resource
 {
     #region Basics
 
+    public Enums.Status Status;
+    
     /// <summary> 根节点 </summary>
-    private Root _root;
+    protected Root MRoot;
+    /// <summary> 父节点 </summary>
+    protected NodeMeta MParent;
     /// <summary> Edit graph node </summary>
-    private BTGraphNode _graphNode;
+    protected BTGraphNode MGraphNode;
     /// <summary> <see cref="BehaviorTree"/> </summary>
-    private BehaviorTree _behaviorTree;
+    protected BehaviorTree MBehaviorTree;
 
     #endregion
     
@@ -101,9 +105,9 @@ public partial class NodeMeta : Resource
     {
         private set
         {
-            if (_graphNode != null) _graphNode.Name = value;
+            if (MGraphNode != null) MGraphNode.Name = value;
         }
-        get => _graphNode?.Name;
+        get => MGraphNode?.Name;
     }
 
     /// <summary> 当前节点类型,注册到<see cref="GraphEdit"/>的<see cref="PopupMenu"/>的子菜单栏中 </summary>
@@ -114,9 +118,9 @@ public partial class NodeMeta : Resource
     {
         private set
         {
-            if (_graphNode != null) _graphNode.PositionOffset = value;
+            if (MGraphNode != null) MGraphNode.PositionOffset = value;
         }
-        get => _graphNode?.PositionOffset ?? Vector2.Zero;
+        get => MGraphNode?.PositionOffset ?? Vector2.Zero;
     }
     
     [NodeMeta] public Array<string> Children { get; set; }
@@ -146,7 +150,7 @@ public partial class NodeMeta : Resource
     /// <param name="data"></param>
     public void Deserialize(Dictionary data)
     {
-        if (data == null || _graphNode == null) return;
+        if (data == null || MGraphNode == null) return;
         
         foreach (var kvp in data)
         {
@@ -158,7 +162,7 @@ public partial class NodeMeta : Resource
 
     #region delegate, event, signal
     /// <summary>
-    /// 节点运行状态 <see cref="Enums.State"/>
+    /// 节点运行状态 <see cref="Enums.Status"/>
     /// </summary>
     [Signal] public delegate void NodeRunningResultEventHandler(BehaviorTree behaviorTree);
 
@@ -171,15 +175,15 @@ public partial class NodeMeta : Resource
         
     }
 
-    public NodeMeta(BTGraphNode graphNode, Dictionary data)
+    public NodeMeta(BTGraphNode mGraphNode, Dictionary data)
     {
-        _graphNode = graphNode;
+        MGraphNode = mGraphNode;
         
         Deserialize(data);
         
-        _graphNode.Title = (string)data["NodeType"];
-        _graphNode.Name = (string)data["NodeName"];
-        _graphNode.PositionOffset = (Vector2)data["NodePositionOffset"];
+        MGraphNode.Title = (string)data["NodeType"];
+        MGraphNode.Name = (string)data["NodeName"];
+        MGraphNode.PositionOffset = (Vector2)data["NodePositionOffset"];
         
         // 加载用作序列化的meta数据
         _metaPropertyInfo = new List<PropertyInfo>();
@@ -195,20 +199,68 @@ public partial class NodeMeta : Resource
 
     #endregion
     
-    public override Array<Dictionary> _GetPropertyList()
+    /// <summary>
+    /// 开始运行节点
+    /// </summary>
+    public void Start()
     {
-        var properties = new Array<Dictionary>
-        {
-            new()
-            {
-                { "name", "_children" },
-                { "type", (int)Variant.Type.Array },
-                { "hint", (int)PropertyHint.ResourceType },
-                { "usage", (int)PropertyUsageFlags.Storage},
-                { "hint_string", "NodeMeta" },
-            }
-        };
+        if (Status == Enums.Status.Running) return;
 
-        return properties;
+        Status = Enums.Status.Running;
+        OnStart();
+        Execute();
+    }
+    
+    /// <summary>
+    /// 执行节点逻辑
+    /// </summary>
+    public void Execute()
+    {
+        
+    }
+    
+    /// <summary>
+    /// 主动停止当前节点运行
+    /// </summary>
+    public void Stop()
+    {
+        if (Status != Enums.Status.Running) return;
+
+        Status = Enums.Status.Free;
+        OnStop();
+    }
+    
+    /// <summary>
+    /// 结束运行节点
+    /// </summary>
+    protected virtual void Finish(bool success)
+    {
+        Status = success ? Enums.Status.Success : Enums.Status.Failure;
+
+        MParent?.OnChildFinished(this, success);
+    }
+    
+    /// <summary>
+    /// 子节点运行结束
+    /// </summary>
+    protected void OnChildFinished(NodeMeta child,bool success)
+    {
+        
+    }
+    
+    /// <summary>
+    /// 开始运行节点时调用
+    /// </summary>
+    protected virtual void OnStart()
+    {
+        
+    }
+    
+    /// <summary>
+    /// 取消运行节点时调用
+    /// </summary>
+    protected virtual void OnStop()
+    {
+        
     }
 }

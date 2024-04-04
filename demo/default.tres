@@ -10,24 +10,28 @@ Filepath = "res://demo/default.tres"
 EngineVersion = "4.2.1-stable (official)"
 PluginVersion = "1.1"
 NodeData = [{
+"Children": [],
 "ExecuteIndex": 0,
 "NodeCategory": "Root",
 "NodeName": "Root",
 "NodePositionOffset": Vector2(0, 0),
 "NodeType": "Root"
 }, {
+"Children": ["Task", "Task2"],
 "ExecuteIndex": 1,
 "NodeCategory": "Composites",
 "NodeName": "Sequence",
 "NodePositionOffset": Vector2(240, 20),
 "NodeType": "Sequence"
 }, {
+"Children": [],
 "ExecuteIndex": 2,
 "NodeCategory": "Task",
 "NodeName": "Task",
 "NodePositionOffset": Vector2(546.64, -27.48),
 "NodeType": "Task"
 }, {
+"Children": [],
 "ExecuteIndex": 3,
 "NodeCategory": "Task",
 "NodeName": "Task2",

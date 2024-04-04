@@ -14,12 +14,18 @@ script = ExtResource("1_mn3k0")
 
 [node name="GraphPopupMenu" type="PopupMenu" parent="."]
 title = "Menu"
-item_count = 1
-item_0/text = "Composite"
+item_count = 3
+item_0/text = "Composites"
+item_0/id = 0
+item_1/text = "Condition"
+item_1/id = 1
+item_2/text = "Task"
+item_2/id = 2
 
 [node name="NodePopupMenu" type="PopupMenu" parent="."]
 item_count = 3
 item_0/text = "Copy"
+item_0/id = 0
 item_1/text = "Paste"
 item_1/id = 1
 item_2/text = "Delete"
