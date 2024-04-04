@@ -1,0 +1,52 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://ctnfd8lp1kmwn"]
+
+[ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTree.cs" id="1_1pauv"]
+
+[resource]
+script = ExtResource("1_1pauv")
+FileDir = "res://demo"
+Filename = "default.tres"
+Filepath = "res://demo/default.tres"
+EngineVersion = "4.2.1-stable (official)"
+PluginVersion = "1.1"
+NodeData = [{
+"ExecuteIndex": 0,
+"NodeCategory": "Root",
+"NodeName": "Root",
+"NodePositionOffset": Vector2(0, 0),
+"NodeType": "Root"
+}, {
+"ExecuteIndex": 1,
+"NodeCategory": "Composites",
+"NodeName": "Sequence",
+"NodePositionOffset": Vector2(240, 20),
+"NodeType": "Sequence"
+}, {
+"ExecuteIndex": 2,
+"NodeCategory": "Task",
+"NodeName": "Task",
+"NodePositionOffset": Vector2(546.64, -27.48),
+"NodeType": "Task"
+}, {
+"ExecuteIndex": 3,
+"NodeCategory": "Task",
+"NodeName": "Task2",
+"NodePositionOffset": Vector2(540, 80),
+"NodeType": "Task"
+}]
+Connection = Array[Dictionary]([{
+"from_node": &"Root",
+"from_port": 0,
+"to_node": &"Sequence",
+"to_port": 0
+}, {
+"from_node": &"Sequence",
+"from_port": 0,
+"to_node": &"Task",
+"to_port": 0
+}, {
+"from_node": &"Sequence",
+"from_port": 0,
+"to_node": &"Task2",
+"to_port": 0
+}])

@@ -173,6 +173,7 @@ public partial class BTGraphEdit : GraphEdit
 	private void OnConnectionRequest(StringName fromNode, long fromPort, StringName toNode, long toPort)
 	{
 		ConnectNode(fromNode, (int)fromPort, toNode, (int)toPort);
+		ReorderNodes();
 	}
 	
 	/// <summary>
@@ -181,6 +182,7 @@ public partial class BTGraphEdit : GraphEdit
 	private void OnDisconnectionRequest(StringName fromNode, long fromPort, StringName toNode, long toPort)
 	{
 		DisconnectNode(fromNode, (int)fromPort, toNode, (int)toPort);
+		ReorderNodes();
 	}
 
 	/// <summary>
@@ -432,10 +434,10 @@ public partial class BTGraphEdit : GraphEdit
 		{
 			root.ProcessExecuteIndex();
 			
-			var composites = root.Meta.Children;
-			foreach (var composite in composites) 
+			var children = root.Meta.Children;
+			foreach (var child in children) 
 			{
-				PreorderTraversal(composite.NodeName, ++index);
+				PreorderTraversal(child, ++index);
 			}
 		}
 		else

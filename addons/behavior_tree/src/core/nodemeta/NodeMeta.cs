@@ -86,9 +86,6 @@ public partial class NodeMeta : Resource
     /// <summary> <see cref="BehaviorTree"/> </summary>
     private BehaviorTree _behaviorTree;
 
-    /// <summary> Storage composite's children node. </summary>
-    public Array<NodeMeta> Children { set; get; } = new ();
-
     #endregion
     
     #region Serialie/Deserialize meta
@@ -98,10 +95,14 @@ public partial class NodeMeta : Resource
     
     /// <summary> 节点类型,将会展示到<see cref="GraphNode.Title"/>作为节点面板名称. </summary>
     [NodeMeta] public string NodeType { get; set; }
+    
     /// <summary> 节点名称,等价于<see cref="GraphNode.Name"/>由于<see cref="GraphEdit"/>是以Name作为节点索引参数. </summary>
     [NodeMeta] public string NodeName
     {
-        private set { }
+        private set
+        {
+            if (_graphNode != null) _graphNode.Name = value;
+        }
         get => _graphNode?.Name;
     }
 
@@ -109,12 +110,17 @@ public partial class NodeMeta : Resource
     [NodeMeta] public string NodeCategory { get; set; }
 
     /// <summary> <see cref="GraphNode.PositionOffset"/> </summary>
-    [NodeMeta]
-    public Vector2 NodePositionOffset
+    [NodeMeta] public Vector2 NodePositionOffset
     {
-        private set { }
+        private set
+        {
+            if (_graphNode != null) _graphNode.PositionOffset = value;
+        }
         get => _graphNode?.PositionOffset ?? Vector2.Zero;
     }
+    
+    [NodeMeta] public Array<string> Children { get; set; }
+    
     /// <summary> 执行索引,标记该节点在行为树中被执行的顺序</summary>
     [NodeMeta] public int ExecuteIndex { get; set; }
     
@@ -172,7 +178,7 @@ public partial class NodeMeta : Resource
         Deserialize(data);
         
         _graphNode.Title = (string)data["NodeType"];
-        _graphNode.Name = (string)data["NodeName"]??NodeType;
+        _graphNode.Name = (string)data["NodeName"];
         _graphNode.PositionOffset = (Vector2)data["NodePositionOffset"];
         
         // 加载用作序列化的meta数据
