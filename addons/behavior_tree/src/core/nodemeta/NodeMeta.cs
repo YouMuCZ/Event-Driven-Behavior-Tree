@@ -90,6 +90,9 @@ public partial class NodeMeta : Resource
     /// <summary> <see cref="BehaviorTree"/> </summary>
     protected BehaviorTree MBehaviorTree;
 
+    private string _nodeName;
+    private Vector2 _positionOffset;
+
     #endregion
     
     #region Serialie/Deserialize meta
@@ -106,8 +109,14 @@ public partial class NodeMeta : Resource
         private set
         {
             if (MGraphNode != null) MGraphNode.Name = value;
+            else _nodeName = value;
         }
-        get => MGraphNode?.Name;
+        get
+        {
+            if (MGraphNode != null) return MGraphNode.Name;
+            
+            return _nodeName;
+        }
     }
 
     /// <summary> 当前节点类型,注册到<see cref="GraphEdit"/>的<see cref="PopupMenu"/>的子菜单栏中 </summary>
@@ -119,8 +128,17 @@ public partial class NodeMeta : Resource
         private set
         {
             if (MGraphNode != null) MGraphNode.PositionOffset = value;
+            else
+            {
+                _positionOffset = value;
+            }
         }
-        get => MGraphNode?.PositionOffset ?? Vector2.Zero;
+        get
+        {
+            if (MGraphNode != null) return MGraphNode.PositionOffset;
+
+            return _positionOffset;
+        }
     }
     
     [NodeMeta] public Array<string> Children { get; set; }
@@ -150,7 +168,7 @@ public partial class NodeMeta : Resource
     /// <param name="data"></param>
     public void Deserialize(Dictionary data)
     {
-        if (data == null || MGraphNode == null) return;
+        if (data == null) return;
         
         foreach (var kvp in data)
         {
