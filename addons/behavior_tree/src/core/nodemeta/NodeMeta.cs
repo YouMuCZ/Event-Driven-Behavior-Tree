@@ -78,8 +78,9 @@ public class NodeMetaStorage
 public partial class NodeMeta : Resource
 {
     #region Basics
-
-    public Enums.Status Status;
+    
+    /// <summary> 当前节点的状态 </summary>
+    public Enums.Status Status = Enums.Status.Free;
     
     /// <summary> 根节点 </summary>
     protected Root MRoot;
@@ -133,12 +134,7 @@ public partial class NodeMeta : Resource
                 _positionOffset = value;
             }
         }
-        get
-        {
-            if (MGraphNode != null) return MGraphNode.PositionOffset;
-
-            return _positionOffset;
-        }
+        get => MGraphNode?.PositionOffset ?? _positionOffset;
     }
     
     [NodeMeta] public Array<string> Children { get; set; }
@@ -187,8 +183,8 @@ public partial class NodeMeta : Resource
     #endregion
 
     #region 构造函数
-
-    public NodeMeta()
+    
+    protected NodeMeta()
     {
         
     }
@@ -210,8 +206,9 @@ public partial class NodeMeta : Resource
             .ToList();
     }
     
-    public NodeMeta(Dictionary data)
+    public NodeMeta(BehaviorTree behaviorTree, Dictionary data)
     {
+        MBehaviorTree = behaviorTree;
         Deserialize(data);
     }
 

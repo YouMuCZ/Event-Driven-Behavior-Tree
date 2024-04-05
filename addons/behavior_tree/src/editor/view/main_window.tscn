@@ -101,7 +101,7 @@ filters = PackedStringArray("*.tres; Dialogue File")
 [node name="OpenFile" type="FileDialog" parent="Main/Window"]
 title = "Open a File"
 size = Vector2i(500, 350)
-ok_button_text = "打开"
+ok_button_text = "Open"
 mode_overrides_title = false
 file_mode = 0
 filters = PackedStringArray("*.tres; Behavior Tree")

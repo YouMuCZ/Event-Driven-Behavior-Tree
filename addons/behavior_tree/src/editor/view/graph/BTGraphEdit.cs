@@ -8,6 +8,8 @@ using Godot.Collections;
 [Tool]
 public partial class BTGraphEdit : GraphEdit
 {
+	public Signal Modified;
+	
 	/// <summary>面板右键菜单</summary>
 	private PopupMenu _graphPopupMenu;
 	/// <summary>节点右键菜单x</summary>
@@ -76,10 +78,8 @@ public partial class BTGraphEdit : GraphEdit
 			else
 			{
 				menu = new PopupMenu();
-				menu.Name = nodeCategory;
 				menu.IndexPressed += (idx) => OnGraphPopupMenuPressed(menu, (int)idx);
-				_graphPopupMenu.AddChild(menu);
-				_graphPopupMenu.AddSubmenuItem(nodeCategory, menu.Name, rootItemIndex);
+				_graphPopupMenu.AddSubmenuNodeItem(nodeCategory, menu);
 			}
 
 			foreach (var variable in value)
@@ -429,24 +429,29 @@ public partial class BTGraphEdit : GraphEdit
 
 		root.Title = $"{root.Meta.NodeType} # {index}";
 		root.Meta.ExecuteIndex = index;
+		root.ProcessExecuteIndex();
+		
+		var children = root.Meta.Children;
+		foreach (var child in children) 
+		{
+			PreorderTraversal(child, ++index);
+		}
 
-		if (root.Meta.NodeCategory == "Composites")
-		{
-			root.ProcessExecuteIndex();
-			
-			var children = root.Meta.Children;
-			foreach (var child in children) 
-			{
-				PreorderTraversal(child, ++index);
-			}
-		}
-		else
-		{
-			foreach (var childName in nextNodes)
-			{
-				PreorderTraversal(childName, ++index);
-			}
-		}
+		// if (root.Meta.NodeCategory == "Composites")
+		// {
+		// 	
+		// 	foreach (var child in children) 
+		// 	{
+		// 		PreorderTraversal(child, ++index);
+		// 	}
+		// }
+		// else
+		// {
+		// 	foreach (var childName in nextNodes)
+		// 	{
+		// 		PreorderTraversal(childName, ++index);
+		// 	}
+		// }
 	}
 
 	#region delegate && event

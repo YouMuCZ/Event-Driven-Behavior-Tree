@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://drdiwxsf8c1ge"]
+[gd_scene load_steps=6 format=3 uid="uid://drdiwxsf8c1ge"]
 
 [ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTreePlayer.cs" id="1_pv7gw"]
+[ext_resource type="Script" path="res://demo/scripts/Character.cs" id="1_uj3hl"]
 [ext_resource type="Resource" uid="uid://raladxnid5tk" path="res://demo/default.tres" id="2_pg4ky"]
 [ext_resource type="Texture2D" uid="uid://ccmpcs1sv2iyn" path="res://icon.svg" id="3_wy1ku"]
 
@@ -8,10 +9,12 @@
 size = Vector2(116, 118)
 
 [node name="Character" type="CharacterBody2D"]
+script = ExtResource("1_uj3hl")
 
-[node name="BehaviorTreePlayer" type="Node" parent="."]
-script = ExtResource("1_pv7gw")
-BehaviorTree = ExtResource("2_pg4ky")
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Camera2D"]
+remote_path = NodePath("../..")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("3_wy1ku")
@@ -19,3 +22,8 @@ texture = ExtResource("3_wy1ku")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_naqhd")
+
+[node name="BehaviorTreePlayer" type="Node" parent="."]
+script = ExtResource("1_pv7gw")
+BehaviorTree = ExtResource("2_pg4ky")
+DebugMode = null

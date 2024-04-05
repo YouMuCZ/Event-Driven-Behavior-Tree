@@ -28,7 +28,7 @@ public partial class BehaviorTree : Resource
     #endregion
     
     private BehaviorTreePlayer _treePlayer;
-    private NodeMeta _root;
+    private Root _root;
     private Dictionary _nodeMetas = new ();
     /// <summary> 当前正在运行的节点栈 </summary>
     private readonly Stack<NodeMeta> _nodeStack = new();
@@ -39,10 +39,19 @@ public partial class BehaviorTree : Resource
 
         foreach (var data in NodeData)
         {
-            var meta = new NodeMeta(data);
+            NodeMeta meta;
+            if ((string)data["NodeType"] == "Root")
+            {
+                meta = _root = new Root(this, data);
+            }
+            else
+            {
+                meta = new NodeMeta(this, data);
+            }
+            
             _nodeMetas.Add(meta.NodeName, meta);
 
-            if (meta.NodeName == "Root") _root = meta;
+            // if (meta.NodeName == "Root") _root = (Root)meta;
         }
         
         _nodeStack.Push(_root);

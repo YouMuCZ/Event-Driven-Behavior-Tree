@@ -18,7 +18,7 @@ public partial class Composite : NodeMeta
         // 可以在这里进行初始化操作
     }
 
-    public Composite(Dictionary graphNode) : base(graphNode)
+    public Composite(BehaviorTree behaviorTree, Dictionary graphNode) : base(behaviorTree, graphNode)
     {
         
     }

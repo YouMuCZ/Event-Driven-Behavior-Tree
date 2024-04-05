@@ -7,6 +7,16 @@ public partial class Root : NodeMeta
 {
     [NodeMeta] public new string NodeType { get; set; } = "Root";
     [NodeMeta] public new string NodeCategory { get; set; } = "Root";
+    
+    public Root()
+    {
+        // 可以在这里进行初始化操作
+    }
+    
+    public Root(BehaviorTree behaviorTree, Dictionary data) : base(behaviorTree, data)
+    {
+        
+    }
 
     protected override void OnStart()
     {
@@ -14,7 +24,7 @@ public partial class Root : NodeMeta
         
         if (Children == null || Children.Count == 0) return;
 
-        MBehaviorTree.GetNodeByName(Children[0])?.Start();
+        MBehaviorTree?.GetNodeByName(Children[0])?.Start();
     }
 
     protected override void OnStop()
@@ -23,6 +33,6 @@ public partial class Root : NodeMeta
         
         if (Children == null || Children.Count == 0) return;
 
-        MBehaviorTree.GetNodeByName(Children[0])?.Stop();
+        MBehaviorTree?.GetNodeByName(Children[0])?.Stop();
     }
 }
