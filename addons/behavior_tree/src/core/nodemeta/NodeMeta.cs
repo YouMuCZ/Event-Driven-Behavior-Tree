@@ -184,7 +184,7 @@ public partial class NodeMeta : Resource
 
     #region 构造函数
     
-    protected NodeMeta()
+    public NodeMeta()
     {
         
     }
@@ -223,13 +223,12 @@ public partial class NodeMeta : Resource
 
         Status = Enums.Status.Running;
         OnStart();
-        Execute();
     }
     
     /// <summary>
     /// 执行节点逻辑
     /// </summary>
-    public void Execute()
+    protected virtual void Execute()
     {
         
     }
@@ -258,13 +257,13 @@ public partial class NodeMeta : Resource
     /// <summary>
     /// 子节点运行结束
     /// </summary>
-    protected void OnChildFinished(NodeMeta child,bool success)
+    protected virtual void OnChildFinished(NodeMeta child,bool success)
     {
         
     }
-    
+     
     /// <summary>
-    /// 开始运行节点时调用
+    /// 开始运行节点时调用,在执行逻辑节点前运行,可以用来初始化数据等操作
     /// </summary>
     protected virtual void OnStart()
     {
@@ -272,7 +271,7 @@ public partial class NodeMeta : Resource
     }
     
     /// <summary>
-    /// 取消运行节点时调用
+    /// 取消运行节点时调用,处理节点取消运行后的逻辑
     /// </summary>
     protected virtual void OnStop()
     {

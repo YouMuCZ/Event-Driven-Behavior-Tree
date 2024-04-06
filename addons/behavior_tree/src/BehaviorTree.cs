@@ -1,5 +1,7 @@
+using System;
 using Godot;
 using System.Collections.Generic;
+using System.Reflection;
 using Godot.Collections;
 
 [Tool]
@@ -36,22 +38,49 @@ public partial class BehaviorTree : Resource
     public void Initialize(BehaviorTreePlayer treePlayer)
     {
         _treePlayer = treePlayer;
+        
+        var namespaceName = typeof(BehaviorTree).Namespace;
+        
+        // 获取程序集
+        var assembly = Assembly.GetExecutingAssembly();
+        // 获取程序集中的所有类型
+        // var types = assembly.GetTypes();
+        //
+        // foreach (var type in types)
+        // {
+        //     if (!type.IsSubclassOf(typeof(NodeMeta))) continue;
+        //     
+        //     GD.Print(type);
+        // }
 
         foreach (var data in NodeData)
         {
-            NodeMeta meta;
-            if ((string)data["NodeType"] == "Root")
+            var nodeName = (string)data["NodeName"]; 
+            var nodeType = (string)data["NodeType"];
+            
+            // 获取类型信息 创建实例
+            var type = assembly.GetType($"{namespaceName}.{nodeType}");
+            if (type != null)
             {
-                meta = _root = new Root(this, data);
-            }
-            else
-            {
-                meta = new NodeMeta(this, data);
+                var instance = (NodeMeta)Activator.CreateInstance(type, new object[] { this, data });
+                _nodeMetas.Add(nodeName, instance);
+                
+                // GD.Print("Initialize ", instance, " ", $"{namespaceName}.{nodeType}");
+
+                if (instance is Root r) _root = r;
             }
             
-            _nodeMetas.Add(meta.NodeName, meta);
-
-            // if (meta.NodeName == "Root") _root = (Root)meta;
+            // NodeMeta meta;
+            // if ((string)data["NodeType"] == "Root")
+            // {
+            //     meta = _root = new Root(this, data);
+            // }
+            // else
+            // {
+            //     meta = new NodeMeta(this, data);
+            // }
+            
+            // _nodeMetas.Add(meta.NodeName, meta);
         }
         
         _nodeStack.Push(_root);
@@ -64,9 +93,8 @@ public partial class BehaviorTree : Resource
     public bool Start()
     {
         if (_root == null) return false;
-
         if (_root.Status == Enums.Status.Running) return false;
-
+        
         _root.Start();
         
         return true;

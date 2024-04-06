@@ -23,7 +23,7 @@ public partial class Root : NodeMeta
         base.OnStart();
         
         if (Children == null || Children.Count == 0) return;
-
+        
         MBehaviorTree?.GetNodeByName(Children[0])?.Start();
     }
 
