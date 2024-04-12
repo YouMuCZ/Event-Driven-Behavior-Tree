@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
@@ -41,7 +42,33 @@ public partial class BTGraphNode : GraphNode
     /// <param name="data"></param>
     public void Initialize(BTGraphEdit graphEdit, Dictionary data)
     {
-	    Meta = new NodeMeta(this, data);
+	    _graphEdit = graphEdit;
+	    _graphEdit.NodeRemoved += OnNodeRemoved;
+	    
+	    // 获取程序集, 获取类型信息 创建实例
+	    var nodeType = (string)data["NodeType"];
+	    var namespaceName = typeof(NodeMeta).Namespace;
+	    var assembly = Assembly.GetExecutingAssembly();
+	    var type = assembly.GetType($"{namespaceName}.{nodeType}");
+	    if (type != null)
+	    {
+		    var instance = (NodeMeta)Activator.CreateInstance(type, new object[] { _graphEdit.MBehaviorTree, this, data });
+		    Meta = instance;
+	    }
+
+	    Meta ??= new NodeMeta(_graphEdit.MBehaviorTree, this, data);
+	    Meta.Initialize();
+    }
+    
+    /// <summary>
+    /// 添加进GraphEdit前需要先初始化部分参数
+    /// </summary>
+    /// <param name="graphEdit"></param>
+    /// <param name="meta"></param>
+    public void Initialize(BTGraphEdit graphEdit, NodeMeta meta)
+    {
+	    Meta = meta;
+	    Meta.Initialize(this);
 	    
 	    _graphEdit = graphEdit;
 	    _graphEdit.NodeRemoved += OnNodeRemoved;

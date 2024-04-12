@@ -29,16 +29,15 @@ public partial class BehaviorTree : Resource
     
     #endregion
     
-    private BehaviorTreePlayer _treePlayer;
+    public Dictionary NodeMetaClasses = new ();
+    public BehaviorTreePlayer MBehaviorTreePlayer;
+    
     private Root _root;
-    private Dictionary _nodeMetas = new ();
     /// <summary> 当前正在运行的节点栈 </summary>
     private readonly Stack<NodeMeta> _nodeStack = new();
     
-    public void Initialize(BehaviorTreePlayer treePlayer)
+    public void Initialize()
     {
-        _treePlayer = treePlayer;
-        
         var namespaceName = typeof(BehaviorTree).Namespace;
         
         // 获取程序集
@@ -52,6 +51,8 @@ public partial class BehaviorTree : Resource
         //     
         //     GD.Print(type);
         // }
+        
+        NodeMetaClasses.Clear();
 
         foreach (var data in NodeData)
         {
@@ -63,24 +64,19 @@ public partial class BehaviorTree : Resource
             if (type != null)
             {
                 var instance = (NodeMeta)Activator.CreateInstance(type, new object[] { this, data });
-                _nodeMetas.Add(nodeName, instance);
                 
-                // GD.Print("Initialize ", instance, " ", $"{namespaceName}.{nodeType}");
-
+                if (instance is null) continue;
+                
+                NodeMetaClasses.Add(nodeName, instance);
+                
                 if (instance is Root r) _root = r;
             }
-            
-            // NodeMeta meta;
-            // if ((string)data["NodeType"] == "Root")
-            // {
-            //     meta = _root = new Root(this, data);
-            // }
-            // else
-            // {
-            //     meta = new NodeMeta(this, data);
-            // }
-            
-            // _nodeMetas.Add(meta.NodeName, meta);
+        }
+
+        foreach (var kvp in NodeMetaClasses)
+        {
+            var meta = (NodeMeta)kvp.Value;
+            meta.Initialize();
         }
         
         _nodeStack.Push(_root);
@@ -115,7 +111,7 @@ public partial class BehaviorTree : Resource
 
     public NodeMeta GetNodeByName(string name)
     {
-        if (_nodeMetas.TryGetValue(name, out var value))
+        if (NodeMetaClasses.TryGetValue(name, out var value))
             return (NodeMeta)value;
         
         return null;

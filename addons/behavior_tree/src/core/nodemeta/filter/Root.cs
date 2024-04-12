@@ -5,8 +5,8 @@ using Godot.Collections;
 [Tool]
 public partial class Root : NodeMeta
 {
-    [NodeMeta] public new string NodeType { get; set; } = "Root";
-    [NodeMeta] public new string NodeCategory { get; set; } = "Root";
+    [NodeMeta] public override string NodeType { get; set; } = "Root";
+    [NodeMeta] public override string NodeCategory { get; set; } = "Root";
     
     public Root()
     {
@@ -16,6 +16,11 @@ public partial class Root : NodeMeta
     public Root(BehaviorTree behaviorTree, Dictionary data) : base(behaviorTree, data)
     {
         
+    }
+    
+    public Root(BehaviorTree behaviorTree, BTGraphNode mGraphNode, Dictionary data) : base(behaviorTree, mGraphNode, data)
+    {
+
     }
 
     protected override void OnStart()

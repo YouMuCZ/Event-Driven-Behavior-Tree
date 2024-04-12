@@ -54,7 +54,7 @@ public partial class Workspace : VBoxContainer
     	for (var i = 0; i < _tabContainer.GetTabCount(); i++)
     	{
     		var editor = GetTabEditor(i);
-    		if (filepath == editor.BehaviorTreeData.Filepath) return i;
+    		if (filepath == editor.MBehaviorTree.Filepath) return i;
     	}
 
     	return -1;

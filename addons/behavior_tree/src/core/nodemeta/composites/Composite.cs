@@ -10,20 +10,20 @@ using Godot.Collections;
 [Tool]
 public partial class Composite : NodeMeta
 {
-    [NodeMeta] public new string NodeCategory { get; set; } = "Composites";
+    [NodeMeta] public override string NodeCategory { get; set; } = "Composites";
 
     public Composite()
     {
         
     }
     
-    public Composite(BTGraphNode mGraphNode, Dictionary data) : base(mGraphNode, data)
-    {
-
-    }
-    
     public Composite(BehaviorTree behaviorTree, Dictionary data) : base(behaviorTree, data)
     {
         
+    }
+    
+    public Composite(BehaviorTree behaviorTree, BTGraphNode mGraphNode, Dictionary data) : base(behaviorTree, mGraphNode, data)
+    {
+
     }
 }

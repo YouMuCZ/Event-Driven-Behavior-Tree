@@ -1,8 +1,23 @@
 using Godot;
-using System;
+using Godot.Collections;
 
 [Tool]
 public partial class Parallel : Composite
 {
-    [NodeMeta] public new string NodeType { get; set; } = "Parallel";
+    [NodeMeta] public override string NodeType { get; set; } = "Parallel";
+    
+    public Parallel()
+    {
+        
+    }
+    
+    public Parallel(BehaviorTree behaviorTree, Dictionary data) : base(behaviorTree, data)
+    {
+        
+    }
+    
+    public Parallel(BehaviorTree behaviorTree, BTGraphNode mGraphNode, Dictionary data) : base(behaviorTree, mGraphNode, data)
+    {
+
+    }
 }

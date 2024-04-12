@@ -1,13 +1,13 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://raladxnid5tk"]
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dydno1kq07l4f"]
 
-[ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTree.cs" id="1_1pauv"]
+[ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTree.cs" id="1_vmvqf"]
 
 [resource]
-script = ExtResource("1_1pauv")
+script = ExtResource("1_vmvqf")
 FileDir = "res://demo"
 Filename = "default.tres"
 Filepath = "res://demo/default.tres"
-EngineVersion = "4.3-dev4 (official)"
+EngineVersion = "4.3-dev5 (official)"
 PluginVersion = "1.1"
 NodeData = [{
 "Children": ["Sequence"],
@@ -17,28 +17,30 @@ NodeData = [{
 "NodePositionOffset": Vector2(0, 0),
 "NodeType": "Root"
 }, {
-"Children": ["Task", "Task2"],
+"Children": ["Wait", "Wait2"],
 "ExecuteIndex": 1,
 "NodeCategory": "Composites",
 "NodeName": "Sequence",
-"NodePositionOffset": Vector2(241, -27.6),
+"NodePositionOffset": Vector2(311, -25.8),
 "NodeType": "Sequence"
 }, {
 "Children": [],
 "ExecuteIndex": 2,
 "NodeCategory": "Task",
-"NodeName": "Task",
-"NodePositionOffset": Vector2(500, -80),
-"NodeType": "Task"
+"NodeName": "Wait",
+"NodePositionOffset": Vector2(540, -80),
+"NodeType": "Wait",
+"WaitTime": 5.0
 }, {
 "Children": [],
 "ExecuteIndex": 3,
 "NodeCategory": "Task",
-"NodeName": "Task2",
-"NodePositionOffset": Vector2(500, 60),
-"NodeType": "Task"
+"NodeName": "Wait2",
+"NodePositionOffset": Vector2(563, 42.2),
+"NodeType": "Wait",
+"WaitTime": 3.0
 }]
-Connection = [{
+Connection = Array[Dictionary]([{
 "from_node": &"Root",
 "from_port": 0,
 "to_node": &"Sequence",
@@ -46,11 +48,11 @@ Connection = [{
 }, {
 "from_node": &"Sequence",
 "from_port": 0,
-"to_node": &"Task",
+"to_node": &"Wait",
 "to_port": 0
 }, {
 "from_node": &"Sequence",
 "from_port": 0,
-"to_node": &"Task2",
+"to_node": &"Wait2",
 "to_port": 0
-}]
+}])

@@ -5,7 +5,7 @@ using Godot.Collections;
 [Tool]
 public partial class Sequence : Composite
 {
-    [NodeMeta] public new string NodeType { get; set; } = "Sequence";
+    [NodeMeta] public override string NodeType { get; set; } = "Sequence";
 
     private int _childExecuteIndex = -1;
     
@@ -15,6 +15,11 @@ public partial class Sequence : Composite
     }
     
     public Sequence(BehaviorTree behaviorTree, Dictionary data) : base(behaviorTree, data)
+    {
+        
+    }
+    
+    public Sequence(BehaviorTree behaviorTree, BTGraphNode mGraphNode, Dictionary data) : base(behaviorTree, mGraphNode, data)
     {
         
     }
@@ -31,7 +36,7 @@ public partial class Sequence : Composite
             return;
         }
         
-        MBehaviorTree?.GetNodeByName(Children[_childExecuteIndex])?.Start();
+        MChildrenInstance[_childExecuteIndex].Start();
     }
 
     protected override void OnStart()
@@ -47,7 +52,7 @@ public partial class Sequence : Composite
     {
         base.OnStop();
         
-        MBehaviorTree?.GetNodeByName(Children[_childExecuteIndex])?.Stop();
+        MChildrenInstance[_childExecuteIndex].Stop();
     }
 
     protected override void OnChildFinished(NodeMeta child, bool success)

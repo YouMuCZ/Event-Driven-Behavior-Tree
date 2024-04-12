@@ -4,6 +4,7 @@ using System.Reflection;
 using System;
 using Godot;
 using Godot.Collections;
+using Array = Godot.Collections.Array;
 
 
 #if TOOLS
@@ -13,7 +14,7 @@ using Godot.Collections;
 [Tool]
 public class NodeMetaStorage
 {
-    public static System.Collections.Generic.Dictionary<string, List<System.Collections.Generic.Dictionary<string, string>>> NodeMetaCategory = new ();
+    public static readonly System.Collections.Generic.Dictionary<string, List<System.Collections.Generic.Dictionary<string, string>>> NodeMenu = new ();
     
     /// <summary>
     /// 初始化右键菜单选项
@@ -54,7 +55,7 @@ public class NodeMetaStorage
             // TODO: 后续应该有config专门用来做编辑器设置用
             if (nodeType is null or "Root" || nodeCategory is null) continue;
             
-            if (NodeMetaCategory.TryGetValue(nodeCategory, out var categories))
+            if (NodeMenu.TryGetValue(nodeCategory, out var categories))
             {
                 var map = new System.Collections.Generic.Dictionary<string, string> { { "NodeType", nodeType }};
                 categories.Add(map);
@@ -63,7 +64,7 @@ public class NodeMetaStorage
             {
                 var map = new System.Collections.Generic.Dictionary<string, string> { { "NodeType", nodeType }};
                 var newTypes = new List<System.Collections.Generic.Dictionary<string, string>> { map };
-                NodeMetaCategory.Add(nodeCategory, newTypes);
+                NodeMenu.Add(nodeCategory, newTypes);
             }
         }
     }
@@ -90,6 +91,10 @@ public partial class NodeMeta : Resource
     protected BTGraphNode MGraphNode;
     /// <summary> <see cref="BehaviorTree"/> </summary>
     protected BehaviorTree MBehaviorTree;
+    /// <summary> meta实例 </summary>
+    protected Array<NodeMeta> MChildrenInstance;
+    /// <summary> <see cref="BehaviorTreePlayer"/> </summary>
+    protected BehaviorTreePlayer MBehaviorTreePlayer;
 
     private string _nodeName;
     private Vector2 _positionOffset;
@@ -102,10 +107,10 @@ public partial class NodeMeta : Resource
     private readonly List<PropertyInfo> _metaPropertyInfo;
     
     /// <summary> 节点类型,将会展示到<see cref="GraphNode.Title"/>作为节点面板名称. </summary>
-    [NodeMeta] public string NodeType { get; set; }
+    [NodeMeta] public virtual string NodeType { get; set; }
     
     /// <summary> 节点名称,等价于<see cref="GraphNode.Name"/>由于<see cref="GraphEdit"/>是以Name作为节点索引参数. </summary>
-    [NodeMeta] public string NodeName
+    [NodeMeta] public virtual string NodeName
     {
         private set
         {
@@ -121,10 +126,10 @@ public partial class NodeMeta : Resource
     }
 
     /// <summary> 当前节点类型,注册到<see cref="GraphEdit"/>的<see cref="PopupMenu"/>的子菜单栏中 </summary>
-    [NodeMeta] public string NodeCategory { get; set; }
+    [NodeMeta] public virtual string NodeCategory { get; set; }
 
     /// <summary> <see cref="GraphNode.PositionOffset"/> </summary>
-    [NodeMeta] public Vector2 NodePositionOffset
+    [NodeMeta] public virtual Vector2 NodePositionOffset
     {
         private set
         {
@@ -136,11 +141,11 @@ public partial class NodeMeta : Resource
         }
         get => MGraphNode?.PositionOffset ?? _positionOffset;
     }
-    
-    [NodeMeta] public Array<string> Children { get; set; }
+
+    [NodeMeta] public virtual Array<string> Children { get; set; } = new ();
     
     /// <summary> 执行索引,标记该节点在行为树中被执行的顺序</summary>
-    [NodeMeta] public int ExecuteIndex { get; set; }
+    [NodeMeta] public virtual int ExecuteIndex { get; set; }
     
     /// <summary>
     /// 序列化meta数据,用来存储到resource本地文件上
@@ -168,7 +173,7 @@ public partial class NodeMeta : Resource
         
         foreach (var kvp in data)
         {
-            Set((string)kvp.Key, kvp.Value);
+            Set((StringName)kvp.Key, kvp.Value);
         }
     }
     
@@ -189,9 +194,19 @@ public partial class NodeMeta : Resource
         
     }
 
-    public NodeMeta(BTGraphNode mGraphNode, Dictionary data)
+    /// <summary>
+    /// 编辑器模式创建节点 meta
+    /// </summary>
+    /// <param name="behaviorTree"></param>
+    /// <param name="mGraphNode"></param>
+    /// <param name="data"></param>
+    public NodeMeta(BehaviorTree behaviorTree, BTGraphNode mGraphNode, Dictionary data)
     {
         MGraphNode = mGraphNode;
+        
+        MBehaviorTree = behaviorTree;
+        MBehaviorTreePlayer = behaviorTree.MBehaviorTreePlayer;
+        MChildrenInstance = new Array<NodeMeta>();
         
         Deserialize(data);
         
@@ -206,10 +221,63 @@ public partial class NodeMeta : Resource
             .ToList();
     }
     
+    /// <summary>
+    /// behavior tree加载的节点meta
+    /// </summary>
+    /// <param name="behaviorTree"></param>
+    /// <param name="data"></param>
     public NodeMeta(BehaviorTree behaviorTree, Dictionary data)
     {
         MBehaviorTree = behaviorTree;
+        MBehaviorTreePlayer = behaviorTree.MBehaviorTreePlayer;
+        MChildrenInstance = new Array<NodeMeta>();
+        
         Deserialize(data);
+        
+        // 加载用作序列化的meta数据
+        _metaPropertyInfo = new List<PropertyInfo>();
+        _metaPropertyInfo = GetType().GetProperties()
+            .Where(t => t.GetCustomAttributes(typeof(NodeMetaAttribute), true).Any())
+            .ToList();
+    }
+    
+    /// <summary>
+    /// 实例化当前节点的所有孩子节点
+    /// </summary>
+    public void Initialize()
+    {
+        if (MBehaviorTree == null) return;
+        
+        foreach (var child in Children)
+        {
+            var node = MBehaviorTree.GetNodeByName(child);
+                
+            if (node is null) continue;
+            node.MParent = this;
+            MChildrenInstance.Add(node);
+        }
+    }
+    
+    /// <summary>
+    /// 实例化当前节点的所有孩子节点
+    /// </summary>
+    public void Initialize(BTGraphNode mGraphNode)
+    {
+        mGraphNode.Title = NodeType;
+        mGraphNode.Name = NodeName;
+        mGraphNode.PositionOffset = NodePositionOffset;
+        MGraphNode = mGraphNode;
+        
+        if (MBehaviorTree == null) return;
+        
+        foreach (var child in Children)
+        {
+            var node = MBehaviorTree.GetNodeByName(child);
+                
+            if (node is null) continue;
+            node.MParent = this;
+            MChildrenInstance.Add(node);
+        }
     }
 
     #endregion
@@ -250,7 +318,7 @@ public partial class NodeMeta : Resource
     protected virtual void Finish(bool success)
     {
         Status = success ? Enums.Status.Success : Enums.Status.Failure;
-
+        
         MParent?.OnChildFinished(this, success);
     }
     

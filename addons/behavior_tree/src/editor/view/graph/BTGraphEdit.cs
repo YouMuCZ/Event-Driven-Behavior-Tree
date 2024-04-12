@@ -20,7 +20,7 @@ public partial class BTGraphEdit : GraphEdit
 	private Array<Dictionary> _copyNodeData = new();
 	/// <summary> 根节点,每个行为树只有一个起始根节点 </summary>
 	private RootNode _rootNode;
-	public BehaviorTree BehaviorTreeData { get; private set; } = new ();
+	public BehaviorTree MBehaviorTree { get; private set; } = new ();
 	private readonly System.Collections.Generic.Dictionary<string, BTGraphNode> _nodes = new ();
 	private readonly System.Collections.Generic.Dictionary<string, PackedScene> _nodesScenes = new ()
 	{
@@ -64,7 +64,7 @@ public partial class BTGraphEdit : GraphEdit
 		_graphPopupMenu.IndexPressed += (idx) => OnGraphPopupMenuPressed(_graphPopupMenu, (int)idx);
 		
 		var rootItemIndex = -1;
-		foreach (var (nodeCategory, value) in NodeMetaStorage.NodeMetaCategory)
+		foreach (var (nodeCategory, value) in NodeMetaStorage.NodeMenu)
 		{
 			PopupMenu menu;
 			var submenuItemIndex = -1;
@@ -164,7 +164,11 @@ public partial class BTGraphEdit : GraphEdit
 	{
 		// 更新检查器面板
 		var btGraphNode = (BTGraphNode)node;
-		EditorInterface.Singleton.InspectObject(btGraphNode.Meta, inspectorOnly:true);
+		
+		if (MBehaviorTree.NodeMetaClasses.TryGetValue(btGraphNode.Meta.NodeName, out var meta))
+		{
+			EditorInterface.Singleton.InspectObject((NodeMeta)meta, inspectorOnly:true);
+		}
 	}
 	
 	/// <summary>
@@ -262,6 +266,28 @@ public partial class BTGraphEdit : GraphEdit
 		
 		newNode.Initialize(this, data);
 		AddChild(newNode, true);
+		_nodes.Add(newNode.Name, newNode);
+		
+		NodeCreated?.Invoke(newNode);
+
+		return newNode;
+	}
+	
+	/// <summary>
+	/// <para>Create and init graph node <see cref="BTGraphNode"/>. If there has data, then deserialize node data.</para>
+	/// </summary>
+	/// <param name="meta"> 右键菜单创建的节点 </param>
+	/// <typeparam name="T"></typeparam>
+	public T CreateNode<T>(NodeMeta meta) where T : BTGraphNode
+	{
+		GD.Print("CreateNode ", meta, " ", meta.NodeName, " ", meta.NodeCategory);
+		var nodeScene = _nodesScenes[meta.NodeCategory];
+		var newNode = nodeScene.Instantiate<T>();
+		
+		newNode.Initialize(this, meta);
+		
+		AddChild(newNode, true);
+		
 		_nodes.Add(newNode.Name, newNode);
 		
 		NodeCreated?.Invoke(newNode);
@@ -372,20 +398,27 @@ public partial class BTGraphEdit : GraphEdit
 	}
 	
 	/// <summary>
-	/// Load deserialized <see cref="BehaviorTreeData" /> from local tres file, and rebuild graph.
+	/// Load deserialized <see cref="MBehaviorTree" /> from local tres file, and rebuild graph.
 	/// </summary>
 	/// <param name="data"></param>
 	public void LoadData(BehaviorTree data)
 	{
-		BehaviorTreeData = data;
+		MBehaviorTree = data;
+		MBehaviorTree.Initialize();
 
 		Name = data.Filename?.Split(".")[0];
 
-		foreach (var d in data.NodeData)
+		foreach (var kvp in MBehaviorTree.NodeMetaClasses)
 		{
-			var newNode = CreateNode<BTGraphNode>(data:d);
+			var newNode = CreateNode<BTGraphNode>((NodeMeta)kvp.Value);
 			if (newNode.Meta.NodeType == "Root") _rootNode = (RootNode)newNode;
 		}
+
+		// foreach (var d in data.NodeData)
+		// {
+		// 	var newNode = CreateNode<BTGraphNode>(data:d);
+		// 	if (newNode.Meta.NodeType == "Root") _rootNode = (RootNode)newNode;
+		// }
 
 		foreach (var c in data.Connection)
 		{
@@ -398,7 +431,7 @@ public partial class BTGraphEdit : GraphEdit
 	/// <summary>
 	/// Return serialized node-graph data, include graph global param.
 	/// </summary>
-	/// <returns><see cref="BehaviorTreeData" /></returns>
+	/// <returns><see cref="MBehaviorTree" /></returns>
 	public BehaviorTree DumpsData()
 	{
 		Array<Dictionary> data = new ();
@@ -407,10 +440,10 @@ public partial class BTGraphEdit : GraphEdit
 			var nodeData = kvp.Value.Meta.Serialize();
 			if (nodeData.Any()) data.Add(nodeData);
 		}
-		BehaviorTreeData.NodeData = data;
+		MBehaviorTree.NodeData = data;
 		
-		BehaviorTreeData.Connection = GetConnectionList();
-		return BehaviorTreeData;
+		MBehaviorTree.Connection = GetConnectionList();
+		return MBehaviorTree;
 	}
 	
 	/// <summary>
@@ -436,22 +469,6 @@ public partial class BTGraphEdit : GraphEdit
 		{
 			PreorderTraversal(child, ++index);
 		}
-
-		// if (root.Meta.NodeCategory == "Composites")
-		// {
-		// 	
-		// 	foreach (var child in children) 
-		// 	{
-		// 		PreorderTraversal(child, ++index);
-		// 	}
-		// }
-		// else
-		// {
-		// 	foreach (var childName in nextNodes)
-		// 	{
-		// 		PreorderTraversal(childName, ++index);
-		// 	}
-		// }
 	}
 
 	#region delegate && event

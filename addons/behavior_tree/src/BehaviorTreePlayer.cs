@@ -29,7 +29,12 @@ public partial class BehaviorTreePlayer : Node
 	public override void _Ready()
 	{
 		_blackboard ??= new Blackboard(this);
-		_behaviorTree?.Initialize(this);
+
+		if (_behaviorTree != null)
+		{
+			_behaviorTree.MBehaviorTreePlayer = this;
+			_behaviorTree.Initialize();
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
