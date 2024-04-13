@@ -17,7 +17,7 @@ NodeData = [{
 "NodePositionOffset": Vector2(0, 0),
 "NodeType": "Root"
 }, {
-"Children": ["Wait", "Wait2"],
+"Children": ["Wait", "Wait2", "Selector"],
 "ExecuteIndex": 1,
 "NodeCategory": "Composites",
 "NodeName": "Sequence",
@@ -28,7 +28,7 @@ NodeData = [{
 "ExecuteIndex": 2,
 "NodeCategory": "Task",
 "NodeName": "Wait",
-"NodePositionOffset": Vector2(540, -80),
+"NodePositionOffset": Vector2(600, -140),
 "NodeType": "Wait",
 "WaitTime": 5.0
 }, {
@@ -36,9 +36,32 @@ NodeData = [{
 "ExecuteIndex": 3,
 "NodeCategory": "Task",
 "NodeName": "Wait2",
-"NodePositionOffset": Vector2(563, 42.2),
+"NodePositionOffset": Vector2(640, -40),
 "NodeType": "Wait",
 "WaitTime": 3.0
+}, {
+"Children": ["Wait3", "Wait4"],
+"ExecuteIndex": 4,
+"NodeCategory": "Composites",
+"NodeName": "Selector",
+"NodePositionOffset": Vector2(594.7, 122.4),
+"NodeType": "Selector"
+}, {
+"Children": [],
+"ExecuteIndex": 5,
+"NodeCategory": "Task",
+"NodeName": "Wait3",
+"NodePositionOffset": Vector2(860, 100),
+"NodeType": "Wait",
+"WaitTime": 0.1
+}, {
+"Children": [],
+"ExecuteIndex": 6,
+"NodeCategory": "Task",
+"NodeName": "Wait4",
+"NodePositionOffset": Vector2(863.1, 242.3),
+"NodeType": "Wait",
+"WaitTime": 0.1
 }]
 Connection = Array[Dictionary]([{
 "from_node": &"Root",
@@ -54,5 +77,20 @@ Connection = Array[Dictionary]([{
 "from_node": &"Sequence",
 "from_port": 0,
 "to_node": &"Wait2",
+"to_port": 0
+}, {
+"from_node": &"Sequence",
+"from_port": 0,
+"to_node": &"Selector",
+"to_port": 0
+}, {
+"from_node": &"Selector",
+"from_port": 0,
+"to_node": &"Wait3",
+"to_port": 0
+}, {
+"from_node": &"Selector",
+"from_port": 0,
+"to_node": &"Wait4",
 "to_port": 0
 }])

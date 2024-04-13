@@ -6,8 +6,6 @@ using Godot.Collections;
 public partial class Sequence : Composite
 {
     [NodeMeta] public override string NodeType { get; set; } = "Sequence";
-
-    private int _childExecuteIndex = -1;
     
     public Sequence()
     {
@@ -22,37 +20,6 @@ public partial class Sequence : Composite
     public Sequence(BehaviorTree behaviorTree, BTGraphNode mGraphNode, Dictionary data) : base(behaviorTree, mGraphNode, data)
     {
         
-    }
-
-    protected override void Execute()
-    {
-        base.Execute();
-        
-        _childExecuteIndex++;
-
-        if (_childExecuteIndex >= Children.Count)
-        {
-            Finish(true);
-            return;
-        }
-        
-        MChildrenInstance[_childExecuteIndex].Start();
-    }
-
-    protected override void OnStart()
-    {
-        base.OnStart();
-        
-        _childExecuteIndex = -1;
-        
-        Execute();
-    }
-
-    protected override void OnStop()
-    {
-        base.OnStop();
-        
-        MChildrenInstance[_childExecuteIndex].Stop();
     }
 
     protected override void OnChildFinished(NodeMeta child, bool success)

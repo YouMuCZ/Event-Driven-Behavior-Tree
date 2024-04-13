@@ -164,11 +164,7 @@ public partial class BTGraphEdit : GraphEdit
 	{
 		// 更新检查器面板
 		var btGraphNode = (BTGraphNode)node;
-		
-		if (MBehaviorTree.NodeMetaClasses.TryGetValue(btGraphNode.Meta.NodeName, out var meta))
-		{
-			EditorInterface.Singleton.InspectObject((NodeMeta)meta, inspectorOnly:true);
-		}
+		EditorInterface.Singleton.InspectObject((NodeMeta)btGraphNode.Meta, inspectorOnly:true);
 	}
 	
 	/// <summary>
@@ -280,7 +276,6 @@ public partial class BTGraphEdit : GraphEdit
 	/// <typeparam name="T"></typeparam>
 	public T CreateNode<T>(NodeMeta meta) where T : BTGraphNode
 	{
-		GD.Print("CreateNode ", meta, " ", meta.NodeName, " ", meta.NodeCategory);
 		var nodeScene = _nodesScenes[meta.NodeCategory];
 		var newNode = nodeScene.Instantiate<T>();
 		

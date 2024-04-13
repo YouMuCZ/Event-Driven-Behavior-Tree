@@ -11,6 +11,8 @@ using Godot.Collections;
 public partial class Composite : NodeMeta
 {
     [NodeMeta] public override string NodeCategory { get; set; } = "Composites";
+    
+    protected int ChildExecuteIndex = -1;
 
     public Composite()
     {
@@ -25,5 +27,36 @@ public partial class Composite : NodeMeta
     public Composite(BehaviorTree behaviorTree, BTGraphNode mGraphNode, Dictionary data) : base(behaviorTree, mGraphNode, data)
     {
 
+    }
+    
+    protected override void OnStart()
+    {
+        base.OnStart();
+        
+        ChildExecuteIndex = -1;
+        
+        Execute();
+    }
+    
+    protected override void Execute()
+    {
+        base.Execute();
+        
+        ChildExecuteIndex++;
+
+        if (ChildExecuteIndex >= Children.Count)
+        {
+            Finish(true);
+            return;
+        }
+        
+        MChildrenInstance[ChildExecuteIndex].Start();
+    }
+    
+    protected override void OnStop()
+    {
+        base.OnStop();
+        
+        MChildrenInstance[ChildExecuteIndex].Stop();
     }
 }
