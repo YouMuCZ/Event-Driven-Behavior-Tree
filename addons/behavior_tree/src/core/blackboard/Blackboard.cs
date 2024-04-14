@@ -2,16 +2,11 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-public partial class Blackboard : RefCounted
+[Tool]
+public partial class Blackboard : Resource
 {
     private Dictionary _blackboard = new();
     private BehaviorTreePlayer _behaviorTreePlayer;
-
-    #region signal
-
-    [Signal] public delegate void BlackboardValueChangedEventHandler(Variant key, Variant value, bool removed);
-
-    #endregion
 
     public Blackboard(BehaviorTreePlayer behaviorTreePlayer)
     {
@@ -63,4 +58,10 @@ public partial class Blackboard : RefCounted
             _blackboard.Remove(key);
         }
     }
+    
+    #region signal
+
+    [Signal] public delegate void BlackboardValueChangedEventHandler(Variant key, Variant value, bool removed);
+
+    #endregion
 }

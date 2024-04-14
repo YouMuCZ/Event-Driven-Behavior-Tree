@@ -8,14 +8,25 @@ public partial class BehaviorTreePlayer : Node
 	private Blackboard _blackboard;
 	private BehaviorTree _behaviorTree;
 	
-	/// <summary> The current entity is executing a behavior tree, and each entity has exactly one <see cref="BehaviorTree"/> running at any given time. </summary>
-	[Export] public BehaviorTree BehaviorTree
+	/// <summary> The current entity is executing a behavior tree, and each entity has exactly one <see cref="MBehaviorTree"/> running at any given time. </summary>
+	[Export] public BehaviorTree MBehaviorTree
 	{
 		get => _behaviorTree;
 		set
 		{
 			EmitSignal(SignalName.BehaviorTreeChanged, value);
 			_behaviorTree = value;
+		}
+	}
+
+	[Export]
+	public Blackboard MBlackboard
+	{
+		get => _blackboard;
+		set
+		{
+			EmitSignal(SignalName.BehaviorTreeBlackboardChanged, value);
+			_blackboard = value;
 		}
 	}
 	
@@ -65,8 +76,8 @@ public partial class BehaviorTreePlayer : Node
 	[Signal] public delegate void BehaviorTreeInterruptEventHandler(BehaviorTree behaviorTree);
 	[Signal] public delegate void BehaviorTreeStopEventHandler(BehaviorTree behaviorTree);
 	[Signal] public delegate void BehaviorTreeChangedEventHandler(BehaviorTree behaviorTree);
+	[Signal] public delegate void BehaviorTreeBlackboardChangedEventHandler(Blackboard blackboard);
 
 	#endregion
-
-
+	
 }
