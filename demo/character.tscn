@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/behavior_tree/src/BehaviorTreePlayer.cs" id="1_pv7gw"]
 [ext_resource type="Script" path="res://demo/scripts/Character.cs" id="1_uj3hl"]
-[ext_resource type="Resource" uid="uid://dydno1kq07l4f" path="res://demo/default.tres" id="2_pg4ky"]
+[ext_resource type="Resource" uid="uid://j0p6h267c73v" path="res://demo/default.tres" id="2_pg4ky"]
 [ext_resource type="Texture2D" uid="uid://ccmpcs1sv2iyn" path="res://icon.svg" id="3_wy1ku"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_naqhd"]

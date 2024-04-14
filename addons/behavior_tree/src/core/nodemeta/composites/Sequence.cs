@@ -2,6 +2,9 @@ using Godot;
 using System;
 using Godot.Collections;
 
+/// <summary>
+/// 节点按从上到下的顺序执行其子节点。当其中一个子节点失败时，序列节点也将停止执行。如果有子节点失败，那么序列就会失败。如果该序列的所有子节点运行都成功执行，则序列节点成功。
+/// </summary>
 [Tool]
 public partial class Sequence : Composite
 {
