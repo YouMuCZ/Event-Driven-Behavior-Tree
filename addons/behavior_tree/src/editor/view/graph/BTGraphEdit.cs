@@ -33,11 +33,23 @@ public partial class BTGraphEdit : GraphEdit
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		Initialize();
-		Setup();
-	}
+		InitNode();
+		InitMenu();
+		
+		// block unloading with a strong handle
+		var handle = System.Runtime.InteropServices.GCHandle.Alloc(this);
 
-	private void Initialize()
+		// register cleanup code to prevent unloading issues
+		System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(System.Reflection.Assembly.GetExecutingAssembly())!.Unloading += alc =>
+		{
+			handle.Free();
+		};
+	}
+	
+	/// <summary>
+	/// 初始化node和event回调函数
+	/// </summary>
+	private void InitNode()
 	{
 		// 初始视图位置
 		ScrollOffset = - new Vector2(0, Size.Y * 0.4f);
@@ -58,7 +70,10 @@ public partial class BTGraphEdit : GraphEdit
 		_nodePopupMenu.IdPressed += OnNodePopupMenuPressed;
 	}
 	
-	private void Setup()
+	/// <summary>
+	/// 初始化菜单
+	/// </summary>
+	private void InitMenu()
 	{
 		// 使用lambda表达式来适配事件处理器签名
 		_graphPopupMenu.IndexPressed += (idx) => OnGraphPopupMenuPressed(_graphPopupMenu, (int)idx);
@@ -78,8 +93,10 @@ public partial class BTGraphEdit : GraphEdit
 			else
 			{
 				menu = new PopupMenu();
+				menu.Name = nodeCategory;
 				menu.IndexPressed += (idx) => OnGraphPopupMenuPressed(menu, (int)idx);
-				_graphPopupMenu.AddSubmenuNodeItem(nodeCategory, menu);
+				_graphPopupMenu.AddChild(menu);
+				_graphPopupMenu.AddSubmenuItem(nodeCategory, menu.Name, rootItemIndex);
 			}
 
 			foreach (var variable in value)
