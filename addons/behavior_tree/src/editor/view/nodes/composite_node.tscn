@@ -1,6 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://cnvryw40kh7or"]
+[gd_scene load_steps=5 format=3 uid="uid://cnvryw40kh7or"]
 
 [ext_resource type="Script" path="res://addons/behavior_tree/src/editor/view/nodes/CompositeNode.cs" id="1_idaq6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ldr67"]
+bg_color = Color(0.239216, 0.239216, 0.239216, 1)
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ih1ue"]
+bg_color = Color(0.105882, 0.384314, 0.72549, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0.388235, 0.576471, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+
+[sub_resource type="Theme" id="Theme_leqpc"]
+GraphNode/constants/port_h_offset = 4
+GraphNode/styles/panel = SubResource("StyleBoxFlat_ldr67")
+GraphNode/styles/titlebar = SubResource("StyleBoxFlat_ih1ue")
 
 [node name="CompositeNode" type="GraphNode"]
 anchors_preset = 8
@@ -17,7 +37,8 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "根节点,行为树总是从根节点开始"
-title = "composite"
+theme = SubResource("Theme_leqpc")
+title = "Composite"
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color(1, 1, 1, 1)
@@ -28,8 +49,6 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("1_idaq6")
-_graphEdit = null
-Meta = null
 
 [node name="Port" type="Control" parent="."]
 layout_mode = 2

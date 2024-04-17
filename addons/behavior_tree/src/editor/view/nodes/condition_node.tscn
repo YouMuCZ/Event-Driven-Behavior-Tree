@@ -1,6 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://dtyn2cq2jffsj"]
+[gd_scene load_steps=5 format=3 uid="uid://dtyn2cq2jffsj"]
 
 [ext_resource type="Script" path="res://addons/behavior_tree/src/editor/view/nodes/ConditionNode.cs" id="1_78eha"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3tpe7"]
+bg_color = Color(0.239216, 0.239216, 0.239216, 1)
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkkjb"]
+bg_color = Color(0.6, 0.611765, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.572549, 0.584314, 0, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+
+[sub_resource type="Theme" id="Theme_erf1c"]
+GraphNode/constants/port_h_offset = 4
+GraphNode/styles/panel = SubResource("StyleBoxFlat_3tpe7")
+GraphNode/styles/titlebar = SubResource("StyleBoxFlat_hkkjb")
 
 [node name="ConditionNode" type="GraphNode"]
 anchors_preset = 8
@@ -17,7 +37,8 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 tooltip_text = "根节点,行为树总是从根节点开始"
-title = "composite"
+theme = SubResource("Theme_erf1c")
+title = "Condition"
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color(1, 1, 1, 1)
