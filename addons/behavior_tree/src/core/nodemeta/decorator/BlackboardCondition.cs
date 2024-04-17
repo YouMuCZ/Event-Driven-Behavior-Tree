@@ -5,7 +5,7 @@ using Godot.Collections;
 [Tool]
 public partial class BlackboardCondition : Condition
 {
-    [NodeMeta] public override string NodeType { get; set; } = "Blackboard";
+    [NodeMeta] public override string NodeType { get; set; } = "BlackboardCondition";
     
     
     public BlackboardCondition()
