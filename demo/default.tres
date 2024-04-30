@@ -17,7 +17,7 @@ NodeData = [{
 "NodePositionOffset": Vector2(0, 0),
 "NodeType": "Root"
 }, {
-"Children": ["Wait", "Wait2", "Parallel"],
+"Children": ["Wait", "Wait2", "MoveDirectlyToward"],
 "ExecuteIndex": 1,
 "NodeCategory": "Composites",
 "NodeName": "Sequence",
@@ -40,29 +40,14 @@ NodeData = [{
 "NodeType": "Wait",
 "WaitTime": 1.0
 }, {
-"Children": ["Wait3", "Wait4"],
+"Children": [],
 "ExecuteIndex": 4,
-"Mode": 2,
-"NodeCategory": "Composites",
-"NodeName": "Parallel",
+"NodeCategory": "Task",
+"NodeName": "MoveDirectlyToward",
 "NodePositionOffset": Vector2(500, 80),
-"NodeType": "Parallel"
-}, {
-"Children": [],
-"ExecuteIndex": 5,
-"NodeCategory": "Task",
-"NodeName": "Wait3",
-"NodePositionOffset": Vector2(760, 51.8),
-"NodeType": "Wait",
-"WaitTime": 1.0
-}, {
-"Children": [],
-"ExecuteIndex": 6,
-"NodeCategory": "Task",
-"NodeName": "Wait4",
-"NodePositionOffset": Vector2(760, 160),
-"NodeType": "Wait",
-"WaitTime": 1.0
+"NodeType": "MoveDirectlyToward",
+"Speed": 2.0,
+"TargetPosition": Vector2(5, 2)
 }]
 Connection = Array[Dictionary]([{
 "from_node": &"Root",
@@ -82,16 +67,6 @@ Connection = Array[Dictionary]([{
 }, {
 "from_node": &"Sequence",
 "from_port": 0,
-"to_node": &"Parallel",
-"to_port": 0
-}, {
-"from_node": &"Parallel",
-"from_port": 0,
-"to_node": &"Wait3",
-"to_port": 0
-}, {
-"from_node": &"Parallel",
-"from_port": 0,
-"to_node": &"Wait4",
+"to_node": &"MoveDirectlyToward",
 "to_port": 0
 }])

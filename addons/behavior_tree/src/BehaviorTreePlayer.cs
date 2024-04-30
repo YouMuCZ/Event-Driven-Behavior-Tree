@@ -4,6 +4,8 @@ using System;
 [GlobalClass]
 public partial class BehaviorTreePlayer : Node
 {
+	public CharacterBody2D Character;
+	
 	private bool _debug;
 	private Blackboard _blackboard;
 	private BehaviorTree _behaviorTree;
@@ -39,6 +41,8 @@ public partial class BehaviorTreePlayer : Node
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		Character ??= GetParent<CharacterBody2D>();
+		
 		_blackboard ??= new Blackboard(this);
 
 		if (_behaviorTree != null)
@@ -51,8 +55,14 @@ public partial class BehaviorTreePlayer : Node
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		_behaviorTree.Process(delta);
 	}
-	
+
+	public override void _PhysicsProcess(double delta)
+	{
+		_behaviorTree.PhysicsProcess(delta);
+	}
+
 	public void Start()
 	{
 		_behaviorTree.Start();

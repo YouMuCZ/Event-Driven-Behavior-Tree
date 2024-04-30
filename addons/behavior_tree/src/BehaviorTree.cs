@@ -34,7 +34,7 @@ public partial class BehaviorTree : Resource
     
     private Root _root;
     /// <summary> 当前正在运行的节点栈 </summary>
-    private readonly Stack<NodeMeta> _nodeStack = new();
+    public Stack<NodeMeta> NodeStack = new();
     
     public void Initialize()
     {
@@ -78,8 +78,6 @@ public partial class BehaviorTree : Resource
             var meta = (NodeMeta)kvp.Value;
             meta.Initialize();
         }
-        
-        _nodeStack.Push(_root);
     }
     
     /// <summary>
@@ -94,6 +92,24 @@ public partial class BehaviorTree : Resource
         _root.Start();
         
         return true;
+    }
+    
+    public void Process(double delta)
+    {
+        if (NodeStack.Count > 0)
+        {
+            var nodeMeta = NodeStack.Peek();
+            nodeMeta.Process(delta);
+        }
+    }
+    
+    public void PhysicsProcess(double delta)
+    {
+        if (NodeStack.Count > 0)
+        {
+            var nodeMeta = NodeStack.Peek();
+            nodeMeta.PhysicsProcess(delta);
+        }
     }
     
     /// <summary>
@@ -115,5 +131,17 @@ public partial class BehaviorTree : Resource
             return (NodeMeta)value;
         
         return null;
+    }
+    
+    public void PushNodeStack(NodeMeta nodeMeta)
+    {
+        GD.Print("PushNodeStack ", nodeMeta);
+        if (!NodeStack.Contains(nodeMeta)) NodeStack.Push(nodeMeta);
+    }
+
+    public void PopNodeStack(NodeMeta nodeMeta)
+    {
+        GD.Print("PopNodeStack ", NodeStack.Peek());
+        if (NodeStack.Contains(nodeMeta))  NodeStack.Pop();
     }
 }

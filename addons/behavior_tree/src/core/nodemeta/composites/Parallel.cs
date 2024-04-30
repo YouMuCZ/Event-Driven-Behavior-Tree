@@ -52,6 +52,8 @@ public partial class Parallel : Composite
     
     protected override void OnStop()
     {
+        base.OnStop();
+        
         foreach (var child in MChildrenInstance)
         {
             child.Stop();

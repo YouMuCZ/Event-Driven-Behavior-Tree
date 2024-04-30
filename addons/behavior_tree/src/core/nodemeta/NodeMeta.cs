@@ -203,7 +203,6 @@ public partial class NodeMeta : Resource
     public NodeMeta(BehaviorTree behaviorTree, BTGraphNode mGraphNode, Dictionary data)
     {
         MGraphNode = mGraphNode;
-        
         MBehaviorTree = behaviorTree;
         MBehaviorTreePlayer = behaviorTree.MBehaviorTreePlayer;
         MChildrenInstance = new Array<NodeMeta>();
@@ -293,10 +292,12 @@ public partial class NodeMeta : Resource
         OnStart();
     }
     
-    /// <summary>
-    /// 执行节点逻辑
-    /// </summary>
-    protected virtual void Execute()
+    public virtual void Process(double delta)
+    {
+        
+    }
+    
+    public virtual void PhysicsProcess(double delta)
     {
         
     }
@@ -318,8 +319,8 @@ public partial class NodeMeta : Resource
     protected virtual void Finish(bool success)
     {
         Status = success ? Enums.Status.Success : Enums.Status.Failure;
-        
         MParent?.OnChildFinished(this, success);
+        MBehaviorTree?.PopNodeStack(this);
     }
     
     /// <summary>
@@ -335,7 +336,7 @@ public partial class NodeMeta : Resource
     /// </summary>
     protected virtual void OnStart()
     {
-        
+        MBehaviorTree?.PushNodeStack(this);
     }
     
     /// <summary>
@@ -343,6 +344,6 @@ public partial class NodeMeta : Resource
     /// </summary>
     protected virtual void OnStop()
     {
-        
+        MBehaviorTree?.PopNodeStack(this);
     }
 }
