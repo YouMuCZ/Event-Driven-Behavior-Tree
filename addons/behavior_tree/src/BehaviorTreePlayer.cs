@@ -4,12 +4,11 @@ using System;
 [GlobalClass]
 public partial class BehaviorTreePlayer : Node
 {
-	public CharacterBody2D Character;
-	
 	private bool _debug;
 	private Blackboard _blackboard;
 	private BehaviorTree _behaviorTree;
 	
+	[Export] public CharacterBody2D Character;
 	/// <summary> The current entity is executing a behavior tree, and each entity has exactly one <see cref="MBehaviorTree"/> running at any given time. </summary>
 	[Export] public BehaviorTree MBehaviorTree
 	{
@@ -21,8 +20,7 @@ public partial class BehaviorTreePlayer : Node
 		}
 	}
 
-	[Export]
-	public Blackboard MBlackboard
+	[Export] public Blackboard MBlackboard
 	{
 		get => _blackboard;
 		set

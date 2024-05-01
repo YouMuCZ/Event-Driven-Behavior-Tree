@@ -99,7 +99,7 @@ public partial class BehaviorTree : Resource
         if (NodeStack.Count > 0)
         {
             var nodeMeta = NodeStack.Peek();
-            nodeMeta.Process(delta);
+            if (nodeMeta.Status == Enums.Status.Running) nodeMeta.Process(delta);
         }
     }
     
@@ -108,7 +108,7 @@ public partial class BehaviorTree : Resource
         if (NodeStack.Count > 0)
         {
             var nodeMeta = NodeStack.Peek();
-            nodeMeta.PhysicsProcess(delta);
+            if (nodeMeta.Status == Enums.Status.Running) nodeMeta.PhysicsProcess(delta);
         }
     }
     
@@ -135,13 +135,13 @@ public partial class BehaviorTree : Resource
     
     public void PushNodeStack(NodeMeta nodeMeta)
     {
-        GD.Print("PushNodeStack ", nodeMeta);
+        GD.Print("PushNodeStack ", nodeMeta.NodeName);
         if (!NodeStack.Contains(nodeMeta)) NodeStack.Push(nodeMeta);
     }
 
     public void PopNodeStack(NodeMeta nodeMeta)
     {
-        GD.Print("PopNodeStack ", NodeStack.Peek());
+        GD.Print("PopNodeStack ", NodeStack.Peek().NodeName);
         if (NodeStack.Contains(nodeMeta))  NodeStack.Pop();
     }
 }

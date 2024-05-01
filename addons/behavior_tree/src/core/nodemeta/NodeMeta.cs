@@ -289,6 +289,7 @@ public partial class NodeMeta : Resource
         if (Status == Enums.Status.Running) return;
 
         Status = Enums.Status.Running;
+        
         OnStart();
     }
     
@@ -308,8 +309,9 @@ public partial class NodeMeta : Resource
     public void Stop()
     {
         if (Status != Enums.Status.Running) return;
-
+        
         Status = Enums.Status.Free;
+        
         OnStop();
     }
     
@@ -319,8 +321,8 @@ public partial class NodeMeta : Resource
     protected virtual void Finish(bool success)
     {
         Status = success ? Enums.Status.Success : Enums.Status.Failure;
-        MParent?.OnChildFinished(this, success);
         MBehaviorTree?.PopNodeStack(this);
+        MParent?.OnChildFinished(this, success);
     }
     
     /// <summary>
