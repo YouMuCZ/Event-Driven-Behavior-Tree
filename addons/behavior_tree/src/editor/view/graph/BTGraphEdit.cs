@@ -27,7 +27,8 @@ public partial class BTGraphEdit : GraphEdit
 		{"Root", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/root_node.tscn")},
 		{"Composites", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/composite_node.tscn")},
 		{"Decorator", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/condition_node.tscn")},
-		{"Task", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/task_node.tscn")}
+		{"Task", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/task_node.tscn")},
+		{"Service", ResourceLoader.Load<PackedScene>("res://addons/behavior_tree/src/editor/view/nodes/service_node.tscn")}
 	};
 	
 	// Called when the node enters the scene tree for the first time.
