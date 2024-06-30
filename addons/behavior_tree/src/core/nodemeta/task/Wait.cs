@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using Godot.Collections;
 
 [Tool]
@@ -26,10 +25,8 @@ public partial class Wait : Task
 
     }
     
-    protected override void Execute()
+    private void Execute()
     {
-        base.Execute();
-        
         Finish(true);
     }
 
@@ -40,15 +37,10 @@ public partial class Wait : Task
         _timer.WaitTime = WaitTime;
         _timer.OneShot = true;
         _timer.Autostart = false;
-        _timer.Connect("timeout", new Callable(this, NodeMeta.MethodName.Execute));
+        _timer.Connect("timeout", new Callable(this, MethodName.Execute));
         
         MBehaviorTreePlayer.AddChild(_timer);
         _timer.Start();
-    }
-
-    protected override void OnStop()
-    {
-        base.OnStop();
     }
 
     protected override void Finish(bool success)
@@ -56,10 +48,5 @@ public partial class Wait : Task
         base.Finish(success);
         
         GD.Print(NodeName, " Finished ", WaitTime);
-    }
-
-    protected override void OnChildFinished(NodeMeta child, bool success)
-    { 
-        base.OnChildFinished(child, success);
     }
 }

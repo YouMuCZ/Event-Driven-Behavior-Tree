@@ -56,7 +56,7 @@ public partial class FileManager : Node
 	}
 
 	/// <summary>
-	/// Create local json file.
+	/// Create local res file.
 	/// </summary>
 	/// <param name="dir"></param>
 	/// <param name="filename"></param>

@@ -38,10 +38,8 @@ public partial class Composite : NodeMeta
         Execute();
     }
     
-    protected override void Execute()
+    protected void Execute()
     {
-        base.Execute();
-        
         ChildExecuteIndex++;
 
         if (ChildExecuteIndex >= Children.Count)

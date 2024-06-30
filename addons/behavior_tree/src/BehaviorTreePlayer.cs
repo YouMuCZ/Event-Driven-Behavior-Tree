@@ -8,14 +8,25 @@ public partial class BehaviorTreePlayer : Node
 	private Blackboard _blackboard;
 	private BehaviorTree _behaviorTree;
 	
-	/// <summary> The current entity is executing a behavior tree, and each entity has exactly one <see cref="BehaviorTree"/> running at any given time. </summary>
-	[Export] public BehaviorTree BehaviorTree
+	[Export] public CharacterBody2D Character;
+	/// <summary> The current entity is executing a behavior tree, and each entity has exactly one <see cref="MBehaviorTree"/> running at any given time. </summary>
+	[Export] public BehaviorTree MBehaviorTree
 	{
 		get => _behaviorTree;
 		set
 		{
 			EmitSignal(SignalName.BehaviorTreeChanged, value);
 			_behaviorTree = value;
+		}
+	}
+
+	[Export] public Blackboard MBlackboard
+	{
+		get => _blackboard;
+		set
+		{
+			EmitSignal(SignalName.BehaviorTreeBlackboardChanged, value);
+			_blackboard = value;
 		}
 	}
 	
@@ -28,6 +39,8 @@ public partial class BehaviorTreePlayer : Node
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		Character ??= GetParent<CharacterBody2D>();
+		
 		_blackboard ??= new Blackboard(this);
 
 		if (_behaviorTree != null)
@@ -40,8 +53,14 @@ public partial class BehaviorTreePlayer : Node
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		_behaviorTree.Process(delta);
 	}
-	
+
+	public override void _PhysicsProcess(double delta)
+	{
+		_behaviorTree.PhysicsProcess(delta);
+	}
+
 	public void Start()
 	{
 		_behaviorTree.Start();
@@ -65,8 +84,8 @@ public partial class BehaviorTreePlayer : Node
 	[Signal] public delegate void BehaviorTreeInterruptEventHandler(BehaviorTree behaviorTree);
 	[Signal] public delegate void BehaviorTreeStopEventHandler(BehaviorTree behaviorTree);
 	[Signal] public delegate void BehaviorTreeChangedEventHandler(BehaviorTree behaviorTree);
+	[Signal] public delegate void BehaviorTreeBlackboardChangedEventHandler(Blackboard blackboard);
 
 	#endregion
-
-
+	
 }

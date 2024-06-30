@@ -1,6 +1,9 @@
 using Godot;
 using Godot.Collections;
 
+/// <summary>
+/// 任务节点的功能是实现操作，例如移动AI或调整黑板值。它们可以连接至 装饰器（Decorators）节点 或 服务（Services）节点。
+/// </summary>
 [Tool]
 public partial class Task : NodeMeta
 {
